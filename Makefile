@@ -6,13 +6,13 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/02 14:56:29 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/10 16:42:21 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3d
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g
 OFLAGS = -c -o
 LFLAGS = -lmlx -lft -lXext -lX11 -lm
 RMF = rm -rf
@@ -24,7 +24,7 @@ MLX_DIR = minilibx-linux
 OBJ_DIR = obj
 INC_DIR = include
 
-_OBJ = cub3d.o
+_OBJ = cub3d.o cub3d_image_utils.o colors.o colors_utils.o
 OBJ := $(patsubst %, $(OBJ_DIR)/%, $(_OBJ))
 
 _DEPS = cub3d.h libft.h mlx.h
