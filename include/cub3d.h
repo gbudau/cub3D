@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/11 00:28:47 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/12 01:34:17 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@
 # include <math.h>
 # include <X11/X.h>
 # include <stdlib.h>
-# define _USE_MATH_DEFINES
 # define FOV 60
 # define HALFFOV 30
-# define TWO_PI 6.28318530717958647692
+# define PI_2 1.5707963267f
+# define PI 3.1415926535f
+# define TWO_PI 6.2831853071f
 # define TILE_SIZE 64
 # define KEY_A 97
 # define KEY_D 100
@@ -32,7 +33,7 @@
 # define KEY_AR_R 65363
 # define WINDOW_TITLE "cub3d"
 # define MINIMAP_SCALE 1
-# define RADIAN_ANGLE 0.01745329251994329547
+# define RADIAN_ANGLE 0.0174532925f
 
 // Delete/Replace later
 #define MAP_WIDTH 20
@@ -43,8 +44,19 @@ typedef struct	s_position {
 	int y;
 }				t_position;
 
+typedef struct	s_line_var
+{
+	int	dx;
+	int	dy;
+	int	sx;
+	int	sy;
+	int error;
+	int error2;
+}				t_line_var;
+
 typedef struct	s_player {
-	t_position	position;
+	float		x;
+	float		y;
 	float		rotation_angle;
 	float		walk_speed;
 	float		turn_speed;
@@ -63,7 +75,6 @@ typedef struct	s_image {
 
 typedef struct	s_window {
 	void	*win;
-	char	*title;
 	int		width;
 	int		height;
 }				t_window;
@@ -93,6 +104,7 @@ typedef struct	s_cube {
 
 void	pixel_put(t_image *img, int x, int y, int color);
 void	draw_rectangle(t_cube *cube, t_position start, t_position end);
+void	draw_line(t_cube *cube, t_position start, t_position end);
 
 /*
 ** Color functions

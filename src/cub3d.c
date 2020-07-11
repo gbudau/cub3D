@@ -6,12 +6,15 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/11 00:27:58 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/11 22:48:36 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 #include <stdio.h>
+
+
+int		update_cube(t_cube *cube);
 
 int map[MAP_HEIGHT][MAP_WIDTH] = {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -33,14 +36,14 @@ int map[MAP_HEIGHT][MAP_WIDTH] = {
 
 int		initialize_player(t_player *player, t_window *window)
 {
-	player->position.x = window->width / 2;
-	player->position.y = window->height / 2;
+	player->x = window->width / 2;
+	player->y = window->height / 2;
 	player->turn_direction = 0;
 	player->walk_direction = 0;
 	player->strafe_direction = 0;
-	player->rotation_angle = M_PI_2;
-	player->walk_speed = 100;
-	player->turn_speed = 45 * (RADIAN_ANGLE);
+	player->rotation_angle = PI_2;
+	player->walk_speed = 0.3;
+	player->turn_speed = 1 * (RADIAN_ANGLE);
 	return (0);
 }
 
@@ -76,7 +79,7 @@ int		initialize_cube(t_cube *cube)
 {
 	cube->mlx = mlx_init();
 	cube->window.win = mlx_new_window(cube->mlx, cube->window.width,
-			cube->window.height, "cub3d");
+			cube->window.height, WINDOW_TITLE);
 	return (0);
 }
 
@@ -89,27 +92,34 @@ int		key_press(int	keycode, t_cube *cube)
 		exit(EXIT_SUCCESS);
 	}
 	if (keycode == KEY_W)
-		printf("%s\n", "Move forward");
+		cube->map.player.walk_direction = 1;
 	if (keycode == KEY_S)
-		printf("%s\n", "Move backward");
+		cube->map.player.walk_direction = -1;
 	if (keycode == KEY_D)
-		printf("%s\n", "Move right");
+		cube->map.player.turn_direction = 1;
 	if (keycode == KEY_A)
-		printf("%s\n", "Move left");
+		cube->map.player.turn_direction = -1;
+	if (keycode == KEY_AR_R)
+		cube->map.player.strafe_direction = 1;
+	if (keycode == KEY_AR_L)
+		cube->map.player.strafe_direction = -1;
 	return (0);
 }
 
 int		key_release(int keycode, t_cube *cube)
 {
-	(void)cube;
 	if (keycode == KEY_W)
-		printf("%s\n", "Stop moving forward");
+		cube->map.player.walk_direction = 0;
 	if (keycode == KEY_S)
-		printf("%s\n", "Stop moving backward");
+		cube->map.player.walk_direction = 0;
 	if (keycode == KEY_D)
-		printf("%s\n", "Stop moving right");
+		cube->map.player.turn_direction = 0;
 	if (keycode == KEY_A)
-		printf("%s\n", "Stop moving left");
+		cube->map.player.turn_direction = 0;
+	if (keycode == KEY_AR_R)
+		cube->map.player.strafe_direction = 0;
+	if (keycode == KEY_AR_L)
+		cube->map.player.strafe_direction = 0;
 	return (0);
 }
 
@@ -127,7 +137,7 @@ int		get_map_color(int row, int col, t_cube *cube)
 	return (map[row][col] == 0 ? 0x00000000 : 0xffffffff);
 }
 
-void	draw_cube(t_cube *cube)
+void	draw_minimap(t_cube *cube)
 {
 	t_position start;
 	t_position end;
@@ -150,41 +160,62 @@ void	draw_cube(t_cube *cube)
 			end.x = scaled.x + cube->map.tile_width * MINIMAP_SCALE;
 			end.y = scaled.y + cube->map.tile_height * MINIMAP_SCALE;
 			draw_rectangle(cube, scaled, end);
-			// Delete this image2window later
-			//mlx_put_image_to_window(cube->mlx, cube->window.win,
-			//		cube->image.img, 0, 0);
 			start.x += cube->map.tile_width;
 		}
 		start.y += cube->map.tile_height;
 	}
 }
 
-void	draw_player(t_cube *cube)
+void	move_player(t_player *player)
+{
+	float	move_step;
+	float	new_player_x;
+	float	new_player_y;
+
+	player->rotation_angle += player->turn_direction * player->turn_speed;
+	move_step = player->walk_direction * player->walk_speed;
+	new_player_x = player->x + cos(player->rotation_angle) * move_step;
+	new_player_y = player->y + sin(player->rotation_angle) * move_step;
+
+	player->x = new_player_x;
+	player->y = new_player_y;
+}
+
+void	draw_player(t_cube *cube, t_player *player)
 {
 	t_position	start;
 	t_position	end;
 
-	start.x = (cube->map.player.position.x - 3) * MINIMAP_SCALE;
-	start.y = (cube->map.player.position.y - 3) * MINIMAP_SCALE;
-	end.x = start.x + 6;
-	end.y = start.y + 6;
+	start.x = (player->x - 3 * MINIMAP_SCALE) * MINIMAP_SCALE;
+	start.y = (player->y - 3 * MINIMAP_SCALE) * MINIMAP_SCALE;
+	end.x = start.x + 6 * MINIMAP_SCALE;
+	end.y = start.y + 6 * MINIMAP_SCALE;
 	cube->map.color = 0xffff0000;
 	draw_rectangle(cube, start, end); 
+	start.x = (player->x) * MINIMAP_SCALE;
+	start.y = (player->y) * MINIMAP_SCALE;
+	end.x = start.x + cos(player->rotation_angle) * 40 * MINIMAP_SCALE;
+	end.y = start.y + sin(player->rotation_angle) * 40 * MINIMAP_SCALE;
+	draw_line(cube, start, end);
 }
 
 int		initialize_hooks(t_cube *cube)
 {
-	mlx_hook(cube->window.win, KeyPress, KeyPressMask, key_press, cube);
-	mlx_hook(cube->window.win, DestroyNotify, StructureNotifyMask,
+	mlx_hook(cube->window.win, ClientMessage, StructureNotifyMask,
 			close_window, cube);
+	mlx_hook(cube->window.win, KeyPress, KeyPressMask, key_press, cube);
 	mlx_hook(cube->window.win, KeyRelease, KeyReleaseMask, key_release, cube);
 	return (0);
 }
 
 int		update_cube(t_cube *cube)
 {
+	draw_minimap(cube);
+	draw_player(cube, &cube->map.player);
+	move_player(&cube->map.player);
 	mlx_put_image_to_window(cube->mlx, cube->window.win,
 			cube->image.img, 0, 0);
+	mlx_do_sync(cube->mlx);
 	return (0);
 }
 
@@ -195,9 +226,8 @@ int		main(void)
 	parse_map(&cube);
 	initialize_cube(&cube);
 	initialize_image(&cube);
-	draw_cube(&cube);
-	draw_player(&cube);
 	update_cube(&cube);
 	initialize_hooks(&cube);
+	mlx_loop_hook(cube.mlx, update_cube, &cube);
 	mlx_loop(cube.mlx);
 }
