@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/12 01:34:17 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/12 13:13:13 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define WINDOW_TITLE "cub3d"
 # define MINIMAP_SCALE 1
 # define RADIAN_ANGLE 0.0174532925f
+# define WALK_SPEED 0.3f
 
 // Delete/Replace later
 #define MAP_WIDTH 20

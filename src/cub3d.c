@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/11 22:48:36 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/12 14:04:28 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ int		initialize_player(t_player *player, t_window *window)
 	player->walk_direction = 0;
 	player->strafe_direction = 0;
 	player->rotation_angle = PI_2;
-	player->walk_speed = 0.3;
-	player->turn_speed = 1 * (RADIAN_ANGLE);
+	player->walk_speed = WALK_SPEED;
+	player->turn_speed = RADIAN_ANGLE;
 	return (0);
 }
 
@@ -96,13 +96,13 @@ int		key_press(int	keycode, t_cube *cube)
 	if (keycode == KEY_S)
 		cube->map.player.walk_direction = -1;
 	if (keycode == KEY_D)
-		cube->map.player.turn_direction = 1;
-	if (keycode == KEY_A)
-		cube->map.player.turn_direction = -1;
-	if (keycode == KEY_AR_R)
 		cube->map.player.strafe_direction = 1;
-	if (keycode == KEY_AR_L)
+	if (keycode == KEY_A)
 		cube->map.player.strafe_direction = -1;
+	if (keycode == KEY_AR_R)
+		cube->map.player.turn_direction = 1;
+	if (keycode == KEY_AR_L)
+		cube->map.player.turn_direction = -1;
 	return (0);
 }
 
@@ -113,13 +113,13 @@ int		key_release(int keycode, t_cube *cube)
 	if (keycode == KEY_S)
 		cube->map.player.walk_direction = 0;
 	if (keycode == KEY_D)
-		cube->map.player.turn_direction = 0;
+		cube->map.player.strafe_direction = 0;
 	if (keycode == KEY_A)
-		cube->map.player.turn_direction = 0;
+		cube->map.player.strafe_direction = 0;
 	if (keycode == KEY_AR_R)
-		cube->map.player.strafe_direction = 0;
+		cube->map.player.turn_direction = 0;
 	if (keycode == KEY_AR_L)
-		cube->map.player.strafe_direction = 0;
+		cube->map.player.turn_direction = 0;
 	return (0);
 }
 
@@ -171,11 +171,15 @@ void	move_player(t_player *player)
 	float	move_step;
 	float	new_player_x;
 	float	new_player_y;
+	float	strafe_angle;
+	float	strafe_step;
 
 	player->rotation_angle += player->turn_direction * player->turn_speed;
-	move_step = player->walk_direction * player->walk_speed;
-	new_player_x = player->x + cos(player->rotation_angle) * move_step;
-	new_player_y = player->y + sin(player->rotation_angle) * move_step;
+	strafe_step = player->strafe_direction * player->walk_speed;
+	strafe_angle = PI_2 * !!player->strafe_direction;
+	move_step = player->walk_direction * player->walk_speed; 
+	new_player_x = player->x + cos(player->rotation_angle) * move_step + cos(player->rotation_angle + strafe_angle) * strafe_step;
+	new_player_y = player->y + sin(player->rotation_angle) * move_step + sin(player->rotation_angle + strafe_angle) * strafe_step;
 
 	player->x = new_player_x;
 	player->y = new_player_y;
