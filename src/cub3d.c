@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/12 14:04:28 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/12 14:19:17 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 int		update_cube(t_cube *cube);
 
-int map[MAP_HEIGHT][MAP_WIDTH] = {
+int grid[MAP_HEIGHT][MAP_WIDTH] = {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -131,10 +131,10 @@ int		close_window(int keycode, t_cube *cube)
 	return (0);
 }
 
-int		get_map_color(int row, int col, t_cube *cube)
+int		get_grid_color(int row, int col, t_cube *cube)
 {
 	(void)cube;
-	return (map[row][col] == 0 ? 0x00000000 : 0xffffffff);
+	return (grid[row][col] == 0 ? 0x00000000 : 0xffffffff);
 }
 
 void	draw_minimap(t_cube *cube)
@@ -154,7 +154,7 @@ void	draw_minimap(t_cube *cube)
 		{
 			row = start.y / cube->map.tile_height;
 			col = start.x / cube->map.tile_width;
-			cube->map.color = get_map_color(row, col, cube);
+			cube->map.color = get_grid_color(row, col, cube);
 			scaled.x = start.x * MINIMAP_SCALE;
 			scaled.y = start.y * MINIMAP_SCALE;
 			end.x = scaled.x + cube->map.tile_width * MINIMAP_SCALE;
@@ -166,13 +166,15 @@ void	draw_minimap(t_cube *cube)
 	}
 }
 
-void	move_player(t_player *player)
+void	move_player(t_player *player, t_map *map)
 {
 	float	move_step;
 	float	new_player_x;
 	float	new_player_y;
 	float	strafe_angle;
 	float	strafe_step;
+	int		row;
+	int		col;
 
 	player->rotation_angle += player->turn_direction * player->turn_speed;
 	strafe_step = player->strafe_direction * player->walk_speed;
@@ -180,9 +182,14 @@ void	move_player(t_player *player)
 	move_step = player->walk_direction * player->walk_speed; 
 	new_player_x = player->x + cos(player->rotation_angle) * move_step + cos(player->rotation_angle + strafe_angle) * strafe_step;
 	new_player_y = player->y + sin(player->rotation_angle) * move_step + sin(player->rotation_angle + strafe_angle) * strafe_step;
+	col = new_player_x / map->tile_width;
+	row = new_player_y / map->tile_height;
 
-	player->x = new_player_x;
-	player->y = new_player_y;
+	if (grid[row][col] != 1)
+	{
+		player->x = new_player_x;
+		player->y = new_player_y;
+	}
 }
 
 void	draw_player(t_cube *cube, t_player *player)
@@ -216,7 +223,7 @@ int		update_cube(t_cube *cube)
 {
 	draw_minimap(cube);
 	draw_player(cube, &cube->map.player);
-	move_player(&cube->map.player);
+	move_player(&cube->map.player, &cube->map);
 	mlx_put_image_to_window(cube->mlx, cube->window.win,
 			cube->image.img, 0, 0);
 	mlx_do_sync(cube->mlx);
