@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/12 13:13:13 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/13 18:38:44 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@
 # include <math.h>
 # include <X11/X.h>
 # include <stdlib.h>
+# include <limits.h>
 # define FOV 60
-# define HALFFOV 30
-# define PI_2 1.5707963267f
 # define PI 3.1415926535f
 # define TWO_PI 6.2831853071f
 # define TILE_SIZE 64
@@ -33,12 +32,10 @@
 # define KEY_AR_R 65363
 # define WINDOW_TITLE "cub3d"
 # define MINIMAP_SCALE 1
-# define RADIAN_ANGLE 0.0174532925f
-# define WALK_SPEED 0.3f
-
-// Delete/Replace later
-#define MAP_WIDTH 20
-#define MAP_HEIGHT 15
+# define WALK_SPEED 0.4f
+# define TURN_SPEED 0.5f
+# define FALSE 0
+# define TRUE 1
 
 typedef struct	s_position {
 	int x;
@@ -92,10 +89,25 @@ typedef	struct	s_map {
 	int			color;
 }				t_map;
 
+typedef struct	s_ray {
+	float	ray_angle;
+	float	wall_hit_x;
+	float	wall_hit_y;
+	float	distance;
+	int		was_hit_vert;
+	int		was_hit_horz;
+	int		wall_hit_content;
+	int		is_ray_facing_up;
+	int		is_ray_facing_down;
+	int		is_ray_facing_right;
+	int		is_ray_facing_left;
+}				t_ray;
+
 typedef struct	s_cube {
 	t_window	window;
 	t_image		image;
 	t_map		map;
+	t_ray		*rays;
 	void		*mlx;
 }				t_cube;
 
@@ -105,7 +117,7 @@ typedef struct	s_cube {
 
 void	pixel_put(t_image *img, int x, int y, int color);
 void	draw_rectangle(t_cube *cube, t_position start, t_position end);
-void	draw_line(t_cube *cube, t_position start, t_position end);
+void	draw_line(t_cube *cube, t_position start, t_position end, int color);
 
 /*
 ** Color functions

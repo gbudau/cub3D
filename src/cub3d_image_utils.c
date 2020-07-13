@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 18:06:18 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/11 19:49:33 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/13 16:38:17 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	line_increase_position(int *error, int *pos, int step, int delta)
 ** https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 */
 
-void	draw_line(t_cube *cube, t_position start, t_position end)
+void	draw_line(t_cube *cube, t_position start, t_position end, int color)
 {
 	t_line_var line;
 
@@ -49,22 +49,14 @@ void	draw_line(t_cube *cube, t_position start, t_position end)
 	{
 		if ((start.x >= 0 && start.x <= cube->window.width) &&
 				(start.y >= 0 && start.y <= cube->window.height))
-			pixel_put(&cube->image, start.x, start.y, cube->map.color);
+			pixel_put(&cube->image, start.x, start.y, color);
 		if (start.x == end.x && start.y == end.y)
 			break ;
 		line.error2 = 2 * line.error;
 		if (line.error2 >= line.dy)
-		{
 			line_increase_position(&line.error, &start.x, line.sx, line.dy); 
-			//line.error += line.dy;
-			//start.x += line.sx;
-		}
 		if (line.error2 <= line.dx)
-		{
 			line_increase_position(&line.error, &start.y, line.sy, line.dx); 
-			//line.error += line.dx;
-			//start.y += line.sy;
-		}
 	}
 }
 
@@ -74,11 +66,15 @@ void	draw_rectangle(t_cube *cube, t_position start, t_position end)
 	int tmp;
 
 	tmp = start.x;
-	while (start.y < end.y && end.y <= cube->window.height)
+	while (start.y < end.y && start.y <= cube->window.height)
 	{
 		start.x = tmp;
-		while (start.x < end.x && end.x <= cube->window.width)
+		while (start.x < end.x && start.x <= cube->window.width)
 		{
+			if (end.x > cube->window.width)
+				end.x = cube->window.width;
+			if (end.y > cube->window.height)
+				end.y = cube->window.height;
 			pixel_put(&cube->image, start.x, start.y, cube->map.color);
 			start.x++;
 		}
