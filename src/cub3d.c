@@ -6,30 +6,41 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/13 19:02:21 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/14 20:16:22 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
 
-// Delete/Replace later
+// Delete/replace later
 #include <stdio.h>
-#define MAP_WIDTH 5
-#define MAP_HEIGHT 5
-#define WINDOW_WIDTH 1500
-#define WINDOW_HEIGHT 700
+#define MAP_WIDTH 20
+#define MAP_HEIGHT 13
+#define WINDOW_WIDTH 1000
+#define WINDOW_HEIGHT 650
+#define TEX_WIDTH 128
+#define TEX_HEIGHT 64
 
 
 int		update_cube(t_cube *cube);
 void	cast_ray(float ray_angle, int strip_id, t_map *map, t_ray *rays, t_cube *cube);
 
-int grid[MAP_HEIGHT][MAP_WIDTH] = {
-	{1,1,1,1,1},
-	{1,0,0,0,1},
-	{1,0,1,0,1},
-	{1,0,0,0,1},
-	{1,1,1,1,1}
+int grid[MAP_HEIGHT][MAP_WIDTH] =
+	{
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ,1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
 void	quit_cube(t_cube *cube, int exit_code)
@@ -40,10 +51,39 @@ void	quit_cube(t_cube *cube, int exit_code)
 	exit(exit_code);
 }
 
+void	create_texture(t_cube *cube)
+{
+	int		x;
+	int		y;
+
+	cube->texture.img = mlx_new_image(cube->mlx, TEX_WIDTH, TEX_HEIGHT);
+	if (!cube->texture.img)
+		quit_cube(cube, EXIT_FAILURE);
+	cube->texture.addr =  mlx_get_data_addr(
+			cube->texture.img,
+			&cube->texture.bits_per_pixel,
+			&cube->texture.size_line,
+			&cube->texture.endian);
+	y = 0;
+	while (y < TEX_HEIGHT)
+	{
+		x = 0;
+		while (x < TEX_WIDTH)
+		{
+			if (x % 8 && y % 8)
+				pixel_put(&cube->texture, x, y, 0xff0000ff);
+			else
+				pixel_put(&cube->texture, x, y, 0xff000000);
+			x++;
+		}
+		y++;
+	}
+}
+
 int		initialize_player(t_player *player, t_window *window)
 {
-	player->x = window->width / 4;
-	player->y = window->height / 4;
+	player->x = window->width / 2;
+	player->y = window->height / 2;
 	player->turn_direction = 0;
 	player->walk_direction = 0;
 	player->strafe_direction = 0;
@@ -59,8 +99,8 @@ int		parse_map(t_cube *cube)
 	// or window.height < map.height and exit with an error
 	cube->window.width = WINDOW_WIDTH;
 	cube->window.height = WINDOW_HEIGHT;
-	cube->map.ceil_color = 0xff666666;
-	cube->map.floor_color = 0xff663300;
+	cube->map.ceil_color = 0xff7ec0ee;
+	cube->map.floor_color = 0xff567e3a;
 	cube->map.width = MAP_WIDTH;
 	cube->map.height = MAP_HEIGHT;
 	cube->map.tile_width = cube->window.width / cube->map.width;
@@ -138,12 +178,6 @@ int		close_window(int keycode, t_cube *cube)
 	return (0);
 }
 
-int		get_grid_color(int row, int col, t_cube *cube)
-{
-	(void)cube;
-	return (grid[row][col] == 0 ? 0x00000000 : 0xffffffff);
-}
-
 void	cast_all_rays(t_cube *cube)
 {
 	float	ray_angle;
@@ -163,6 +197,12 @@ void	cast_all_rays(t_cube *cube)
 	}
 }
 
+int		grid_color(int row, int col, t_cube *cube)
+{
+	(void)cube;
+	return (grid[row][col] == 0 ? 0x00000000 : 0xffffffff);
+}
+
 void	draw_minimap(t_cube *cube)
 {
 	t_position start;
@@ -178,14 +218,18 @@ void	draw_minimap(t_cube *cube)
 		start.x = 0;
 		while (start.x < cube->window.width)
 		{
-			row = start.y / cube->map.tile_height;
-			col = start.x / cube->map.tile_width;
-			cube->map.color = get_grid_color(row, col, cube);
-			scaled.x = start.x * MINIMAP_SCALE;
-			scaled.y = start.y * MINIMAP_SCALE;
-			end.x = scaled.x + cube->map.tile_width * MINIMAP_SCALE;
-			end.y = scaled.y + cube->map.tile_height * MINIMAP_SCALE;
-			draw_rectangle(cube, scaled, end);
+			row = floor(start.y / cube->map.tile_height);
+			col = floor(start.x / cube->map.tile_width);
+			if (row < cube->map.height && col < cube->map.width)
+			{
+				scaled.x = start.x * MINIMAP_SCALE;
+				scaled.y = start.y * MINIMAP_SCALE;
+				end.x = scaled.x + cube->map.tile_width * MINIMAP_SCALE;
+				end.y = scaled.y + cube->map.tile_height * MINIMAP_SCALE;
+				draw_rectangle(cube, scaled, end, grid_color(row, col, cube));
+			}
+			else
+				break;
 			start.x += cube->map.tile_width;
 		}
 		start.y += cube->map.tile_height;
@@ -238,19 +282,17 @@ void	draw_player(t_cube *cube, t_player *player)
 {
 	t_position	start;
 	t_position	end;
-	int			color;
 
 	start.x = (player->x - 3 * MINIMAP_SCALE) * MINIMAP_SCALE;
 	start.y = (player->y - 3 * MINIMAP_SCALE) * MINIMAP_SCALE;
 	end.x = (player->x + 3 * MINIMAP_SCALE) * MINIMAP_SCALE;
 	end.y = (player->y + 3 * MINIMAP_SCALE) * MINIMAP_SCALE;
-	color = 0xffffffff;
-	draw_rectangle(cube, start, end); 
+	draw_rectangle(cube, start, end, 0xffffff00); 
 	start.x = (player->x) * MINIMAP_SCALE;
 	start.y = (player->y) * MINIMAP_SCALE;
 	end.x = start.x + cos(player->rotation_angle) * 40 * MINIMAP_SCALE;
 	end.y = start.y + sin(player->rotation_angle) * 40 * MINIMAP_SCALE;
-	draw_line(cube, start, end, color);
+	draw_line(cube, start, end, 0xffffffff);
 }
 
 float	normalize_angle(float angle)
@@ -435,6 +477,7 @@ void	cast_ray(float ray_angle, int strip_id, t_map *map, t_ray *rays, t_cube *cu
 		rays[strip_id].wall_hit_y = vert_wall_hit_y;
 		rays[strip_id].wall_hit_content = vert_wall_content;
 		rays[strip_id].was_hit_vert = TRUE;
+		rays[strip_id].was_hit_horz = FALSE;
 	}
 	else
 	{
@@ -443,6 +486,7 @@ void	cast_ray(float ray_angle, int strip_id, t_map *map, t_ray *rays, t_cube *cu
 		rays[strip_id].wall_hit_y = horz_wall_hit_y;
 		rays[strip_id].wall_hit_content = horz_wall_content;
 		rays[strip_id].was_hit_horz = TRUE;
+		rays[strip_id].was_hit_vert = FALSE;
 	}
 	rays[strip_id].ray_angle = ray_angle;
 	rays[strip_id].is_ray_facing_down = is_ray_facing_down;
@@ -460,13 +504,118 @@ int		initialize_hooks(t_cube *cube)
 	return (0);
 }
 
-int		update_cube(t_cube *cube)
+void	fill_image(t_cube *cube, int color)
 {
+	int	y;
+	int	x;
+
+	y = 0;
+	x = 0;
+	while (y < cube->window.height)
+	{
+		x = 0;
+		while (x < cube->window.width)
+		{
+			pixel_put(&cube->image, x, y, color);
+			x++;
+		}
+		y++;
+	}
+}
+
+int		wall_side(t_ray *rays, int i)
+{
+	int	color;
+
+	if (rays[i].was_hit_vert)
+	{
+		// East wall
+		if (rays[i].is_ray_facing_right)
+			color = 0xffff0000;
+		// West wall
+		else
+			color = 0xff0000ff;
+	}
+	else
+	{
+		// South wall
+		if (rays[i].is_ray_facing_up)
+			color = 0xffffffff;
+		// North wall
+		else
+			color = 0xff000000;
+	}
+	return (color);
+}
+
+int		project_walls(t_cube *cube)
+{
+	int		i;
+	int		y;
+	int		wall_strip_height;
+	float	distance_proj_plane;
+	float	fov_angle;
+	float	projected_wall_height;
+	float	perp_distance;
+	int		wall_top_pixel;
+	int		wall_bottom_pixel;
+
+	i = 0;
+	fov_angle = (FOV * (PI / 180));
+	distance_proj_plane = (cube->window.width / 2) / tan(fov_angle / 2);
+	while (i < cube->window.width)
+	{
+		perp_distance = cube->rays[i].distance * cos(cube->rays[i].ray_angle - cube->map.player.rotation_angle);
+		projected_wall_height = (cube->map.tile_height / perp_distance) * distance_proj_plane;
+		wall_strip_height = projected_wall_height;
+		wall_top_pixel = (cube->window.height / 2) - (wall_strip_height / 2);
+		wall_top_pixel = wall_top_pixel < 0 ? 0 : wall_top_pixel;
+		wall_bottom_pixel = (cube->window.height / 2) + (wall_strip_height / 2);
+		wall_bottom_pixel = wall_bottom_pixel > cube->window.height ? cube->window.height : wall_bottom_pixel;
+		
+		// Draw ceiling
+		y = 0;
+		while (y < wall_top_pixel)
+		{
+			pixel_put(&cube->image, i, y, cube->map.ceil_color);
+			y++;
+		}
+
+		// Draw walls
+		y = wall_top_pixel;
+		while (y < wall_bottom_pixel)
+		{
+			pixel_put(&cube->image, i, y, wall_side(cube->rays, i));
+			y++;
+		}
+		// Draw floor
+		y = wall_bottom_pixel;
+		while (y < cube->window.height)
+		{
+			pixel_put(&cube->image, i ,y, cube->map.floor_color);
+			y++;
+		}
+
+		i++;
+	}
+	return (0);
+}
+
+int		render_cube(t_cube *cube)
+{
+	//fill_image(cube, 0x000000ff);
+	project_walls(cube);
 	draw_minimap(cube);
-	move_player(&cube->map.player, &cube->map);
-	cast_all_rays(cube);
 	render_rays(cube->rays, &cube->window, cube);
 	draw_player(cube, &cube->map.player);
+	return (0);
+}
+
+int		update_cube(t_cube *cube)
+{
+	move_player(&cube->map.player, &cube->map);
+	cast_all_rays(cube);
+	render_cube(cube);
 	mlx_put_image_to_window(cube->mlx, cube->window.win,
 			cube->image.img, 0, 0);
 	mlx_do_sync(cube->mlx);
@@ -480,7 +629,6 @@ int		main(void)
 	parse_map(&cube);
 	initialize_cube(&cube);
 	initialize_image(&cube);
-	update_cube(&cube);
 	initialize_hooks(&cube);
 	mlx_loop_hook(cube.mlx, update_cube, &cube);
 	mlx_loop(cube.mlx);

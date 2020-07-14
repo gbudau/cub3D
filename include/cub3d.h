@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/13 18:38:44 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/14 19:29:08 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@
 # define KEY_AR_L 65361
 # define KEY_AR_R 65363
 # define WINDOW_TITLE "cub3d"
-# define MINIMAP_SCALE 1
-# define WALK_SPEED 0.4f
-# define TURN_SPEED 0.5f
+# define MINIMAP_SCALE 0.2f
+# define WALK_SPEED 1.0f
+# define TURN_SPEED 1.0f
 # define FALSE 0
 # define TRUE 1
 
@@ -109,6 +109,7 @@ typedef struct	s_cube {
 	t_map		map;
 	t_ray		*rays;
 	void		*mlx;
+	t_image		texture;
 }				t_cube;
 
 /*
@@ -116,7 +117,7 @@ typedef struct	s_cube {
 */
 
 void	pixel_put(t_image *img, int x, int y, int color);
-void	draw_rectangle(t_cube *cube, t_position start, t_position end);
+void	draw_rectangle(t_cube *cube, t_position start, t_position end, int color);
 void	draw_line(t_cube *cube, t_position start, t_position end, int color);
 
 /*

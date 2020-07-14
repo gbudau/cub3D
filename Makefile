@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/10 16:42:21 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/13 20:01:46 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ SRC_DIR = src
 LIB_DIR = lib
 LIBFT_DIR = libft
 MLX_DIR = minilibx-linux
-OBJ_DIR = obj
+OBJ_DIR := obj
 INC_DIR = include
 
 _OBJ = cub3d.o cub3d_image_utils.o colors.o colors_utils.o

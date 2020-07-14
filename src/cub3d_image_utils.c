@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 18:06:18 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/13 16:38:17 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/14 19:39:00 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@ void	pixel_put(t_image *img, int x, int y, int color)
 
 	dst = img->addr + (y * img->size_line + x * (img->bits_per_pixel / 8));
 	*(unsigned int*)dst = color;
+}
+
+void	pixel_get(t_image *img, int x, int y, int *color)
+{
+	char	*dst;
+
+	dst = img->addr + (y * img->size_line + x * (img->bits_per_pixel / 8));
+	*color = *(unsigned int*)dst;
 }
 
 int		ft_abs(int n)
@@ -47,8 +55,8 @@ void	draw_line(t_cube *cube, t_position start, t_position end, int color)
 	line.error = line.dx + line.dy;
 	while (1)
 	{
-		if ((start.x >= 0 && start.x <= cube->window.width) &&
-				(start.y >= 0 && start.y <= cube->window.height))
+		if ((start.x >= 0 && start.x < cube->window.width) &&
+				(start.y >= 0 && start.y < cube->window.height))
 			pixel_put(&cube->image, start.x, start.y, color);
 		if (start.x == end.x && start.y == end.y)
 			break ;
@@ -61,21 +69,17 @@ void	draw_line(t_cube *cube, t_position start, t_position end, int color)
 }
 
 
-void	draw_rectangle(t_cube *cube, t_position start, t_position end)
+void	draw_rectangle(t_cube *cube, t_position start, t_position end, int color)
 {
 	int tmp;
 
 	tmp = start.x;
-	while (start.y < end.y && start.y <= cube->window.height)
+	while (start.y <= end.y && start.y < cube->window.height)
 	{
 		start.x = tmp;
-		while (start.x < end.x && start.x <= cube->window.width)
+		while (start.x <= end.x && start.x < cube->window.width)
 		{
-			if (end.x > cube->window.width)
-				end.x = cube->window.width;
-			if (end.y > cube->window.height)
-				end.y = cube->window.height;
-			pixel_put(&cube->image, start.x, start.y, cube->map.color);
+			pixel_put(&cube->image, start.x, start.y, color);
 			start.x++;
 		}
 		start.y++;

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 19:46:10 by gbudau            #+#    #+#             */
-/*   Updated: 2019/11/29 19:54:18 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/14 13:17:04 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,12 @@
 
 void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
-	t_list	**plst;
+	t_list	*trav;
 
-	plst = &lst;
-	if ((*plst) != NULL)
+	trav = lst;
+	while (trav != NULL)
 	{
-		while ((*plst) != NULL)
-		{
-			f((*plst)->content);
-			plst = &(*plst)->next;
-		}
+		f(trav->content);
+		trav = trav->next;
 	}
 }
