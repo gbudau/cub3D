@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/14 19:29:08 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/15 18:24:20 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ typedef struct	s_cube {
 */
 
 void	pixel_put(t_image *img, int x, int y, int color);
+int		pixel_get(t_image *img, int x, int y);
 void	draw_rectangle(t_cube *cube, t_position start, t_position end, int color);
 void	draw_line(t_cube *cube, t_position start, t_position end, int color);
 

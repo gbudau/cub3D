@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 18:06:18 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/14 19:39:00 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/15 18:23:01 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ void	pixel_put(t_image *img, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void	pixel_get(t_image *img, int x, int y, int *color)
+int	pixel_get(t_image *img, int x, int y)
 {
 	char	*dst;
 
 	dst = img->addr + (y * img->size_line + x * (img->bits_per_pixel / 8));
-	*color = *(unsigned int*)dst;
+	return (*(unsigned int*)dst);
 }
 
 int		ft_abs(int n)

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/14 20:16:22 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/15 21:11:49 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 // Delete/replace later
 #include <stdio.h>
+#include <assert.h>
 #define MAP_WIDTH 20
 #define MAP_HEIGHT 13
-#define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 650
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 #define TEX_WIDTH 128
 #define TEX_HEIGHT 64
 
@@ -46,6 +47,7 @@ int grid[MAP_HEIGHT][MAP_WIDTH] =
 void	quit_cube(t_cube *cube, int exit_code)
 {
 	mlx_destroy_image(cube->mlx, cube->image.img);
+	mlx_destroy_image(cube->mlx, cube->texture.img);
 	mlx_destroy_window(cube->mlx, cube->window.win);
 	free(cube->rays);
 	exit(exit_code);
@@ -118,6 +120,7 @@ int		initialize_image(t_cube *cube)
 			&cube->image.bits_per_pixel,
 			&cube->image.size_line, 
 			&cube->image.endian);
+	create_texture(cube);
 	return (0);
 }
 
@@ -218,8 +221,8 @@ void	draw_minimap(t_cube *cube)
 		start.x = 0;
 		while (start.x < cube->window.width)
 		{
-			row = floor(start.y / cube->map.tile_height);
-			col = floor(start.x / cube->map.tile_width);
+			row = start.y / cube->map.tile_height;
+			col = start.x / cube->map.tile_width;
 			if (row < cube->map.height && col < cube->map.width)
 			{
 				scaled.x = start.x * MINIMAP_SCALE;
@@ -266,7 +269,7 @@ void	move_player(t_player *player, t_map *map)
 
 	player->rotation_angle += player->turn_direction * player->turn_speed;
 	strafe_step = player->strafe_direction * player->walk_speed;
-	strafe_angle = PI / 2 * !!player->strafe_direction;
+	strafe_angle = 0.5 * PI * !!player->strafe_direction;
 	move_step = player->walk_direction * player->walk_speed; 
 	new_x = player->x + cos(player->rotation_angle) * move_step + cos(player->rotation_angle + strafe_angle) * strafe_step;
 	new_y = player->y + sin(player->rotation_angle) * move_step + sin(player->rotation_angle + strafe_angle) * strafe_step;
@@ -353,7 +356,7 @@ void	cast_ray(float ray_angle, int strip_id, t_map *map, t_ray *rays, t_cube *cu
 	ray_angle = normalize_angle(ray_angle);
 	is_ray_facing_down = ray_angle > 0 && ray_angle < PI;
 	is_ray_facing_up = !is_ray_facing_down;
-	is_ray_facing_right = ray_angle < 0.5 * PI || ray_angle > 1.5 * PI;
+	is_ray_facing_right = ray_angle < PI * 0.5 || ray_angle > PI * 1.5;
 	is_ray_facing_left = !is_ray_facing_right;
 
 	// Horizontal Ray-grid intersection code
@@ -363,7 +366,7 @@ void	cast_ray(float ray_angle, int strip_id, t_map *map, t_ray *rays, t_cube *cu
 	horz_wall_content = 0;
 
 	// Find the y-coordinate of the closest horizontal grid intersection
-	yintercept = floor(map->player.y / map->tile_height) * map->tile_height;
+	yintercept = (int)(map->player.y / map->tile_height) * map->tile_height;
 	yintercept += is_ray_facing_down ? map->tile_height : 0;
 
 	// Find the x-coordinate of the closest horizontal grid intersection
@@ -412,7 +415,7 @@ void	cast_ray(float ray_angle, int strip_id, t_map *map, t_ray *rays, t_cube *cu
 	vert_wall_content = 0;
 
 	// Find the x-coordinate of the closest vertical grid intersection
-	xintercept = floor(map->player.x / map->tile_width) * map->tile_width;
+	xintercept = (int)(map->player.x / map->tile_width) * map->tile_width;
 	xintercept += is_ray_facing_right ? map->tile_width : 0;
 
 	// Find the x-coordinate of the closest horizontal grid intersection
@@ -560,6 +563,11 @@ int		project_walls(t_cube *cube)
 	int		wall_top_pixel;
 	int		wall_bottom_pixel;
 
+	int		texel_color;
+	int		texture_offset_x;
+	int		texture_offset_y;
+	int		distance_from_top;
+
 	i = 0;
 	fov_angle = (FOV * (PI / 180));
 	distance_proj_plane = (cube->window.width / 2) / tan(fov_angle / 2);
@@ -581,11 +589,29 @@ int		project_walls(t_cube *cube)
 			y++;
 		}
 
+		// Calculate texture_offset_x
+		if (cube->rays[i].was_hit_vert)
+		{
+			// perform offset for the vertical hit
+			texture_offset_x = (int)cube->rays[i].wall_hit_y % TEX_HEIGHT;
+		}
+		else
+		{
+			// perform offset for the horizontal hit
+			texture_offset_x = (int)cube->rays[i].wall_hit_x % TEX_WIDTH;
+		}
+
 		// Draw walls
 		y = wall_top_pixel;
 		while (y < wall_bottom_pixel)
 		{
-			pixel_put(&cube->image, i, y, wall_side(cube->rays, i));
+			// Calculate texture_offset_y
+			distance_from_top = y + (wall_strip_height / 2) - (cube->window.height / 2);
+			texture_offset_y = distance_from_top * ((float)TEX_HEIGHT / wall_strip_height);
+
+			// Set the color of the wall based on the color from the texture
+			texel_color = pixel_get(&cube->texture, texture_offset_x, texture_offset_y);
+			pixel_put(&cube->image, i, y, texel_color);
 			y++;
 		}
 		// Draw floor
