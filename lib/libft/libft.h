@@ -6,7 +6,7 @@
 /*   By: gbudau <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 21:34:03 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/14 13:42:45 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/16 16:43:21 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,6 @@ t_list		*ft_lstrev(t_list *lst);
 char		*ft_strjoin_free(char *s1, char *s2, size_t flag);
 int			get_next_line(int fd, char **line);
 char		*ft_strcpy(char *dst, const char *src);
+int			ft_abs(int n);
 
 #endif
