@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/18 18:39:13 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/18 21:06:31 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 # include <X11/X.h>
 # include <stdlib.h>
 # include <limits.h>
+# include <unistd.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 # define FOV 60
 # define PI 3.1415926535f
 # define TWO_PI 6.2831853071f
@@ -45,6 +48,29 @@ enum	e_texture
 	NORTH,
 	SPRITE
 };
+
+typedef struct	s_bitmap_file_header
+{
+	unsigned int	bf_size;
+	unsigned short	bf_reverved1;
+	unsigned short	bf_reserved2;
+	unsigned int	bf_off_bits;
+}				t_bitmap_file_header;
+
+typedef struct	s_bitmap_info_header
+{
+	unsigned int	bi_size;
+	int				bi_width;
+	int				bi_height;
+	unsigned short	bi_planes;
+	unsigned short	bi_bit_count;
+	unsigned int	bi_compression;
+	unsigned int	bi_size_image;
+	int				bi_x_pels_per_meter;
+	int				bi_y_pels_per_meter;
+	unsigned int	bi_clr_used;
+	unsigned int	bi_clr_important;
+}				t_bitmap_info_header;
 
 typedef struct	s_point
 {
@@ -156,6 +182,8 @@ int				pixel_get(t_image *img, int x, int y);
 void			draw_rectangle(t_cube *cube, t_point start,
 				t_point end, int color);
 void			draw_line(t_cube *cube, t_point start, t_point end, int color);
+void			save_bitmap(t_cube *cube);
+void			quit_cube(t_cube *cube, int exit_code);
 
 /*
 ** Color functions

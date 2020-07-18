@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/18 19:09:52 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/18 21:02:55 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -788,6 +788,7 @@ int		main(void)
 	initialize_image(&cube);
 	initialize_hooks(&cube);
 	update_cube(&cube);
+	save_bitmap(&cube);
 	mlx_loop_hook(cube.mlx, update_cube, &cube);
 	mlx_loop(cube.mlx);
 }
