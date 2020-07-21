@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/18 21:02:55 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/21 21:02:42 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #define MAP_HEIGHT 13
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
+#include <stdio.h>
 
 int		update_cube(t_cube *cube);
 void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube);
@@ -64,16 +65,17 @@ void	quit_cube(t_cube *cube, int exit_code)
 
 	free(cube->rays);
 	free(cube->sprites);
-	if (cube->image.img)
-		mlx_destroy_image(cube->mlx, cube->image.img);
 	i = 0;
 	while (i < TEXTURES)
 	{
+		free(cube->map.paths[i]);
 		if (cube->texture[i].image.img)
 			mlx_destroy_image(cube->mlx, cube->texture[i].image.img);
 		i++;
 	}
-	if (cube->mlx)
+	if (cube->mlx && cube->image.img)
+		mlx_destroy_image(cube->mlx, cube->image.img);
+	if (cube->mlx && cube->win)
 		mlx_destroy_window(cube->mlx, cube->win);
 	exit(exit_code);
 }
@@ -118,8 +120,10 @@ int		initialize_sprites(t_cube *cube)
 	return (0);
 }
 
-int		parse_map(t_cube *cube)
+/*
+void	parse_cub(char *path, t_cube *cube)
 {
+	(void)path;
 	// TODO: Check if cube->width < map.width
 	// or cube->height < map.height and exit with an error
 	cube->width = WINDOW_WIDTH;
@@ -135,6 +139,7 @@ int		parse_map(t_cube *cube)
 	initialize_sprites(cube);
 	return (0);
 }
+*/
 
 int		initialize_image(t_cube *cube)
 {
@@ -778,17 +783,55 @@ int		update_cube(t_cube *cube)
 	return (0);
 }
 
-int		main(void)
+void	print_map(t_cube *cube)
+{
+	// TODO: Check if cube->width < map.width
+	// or cube->height < map.height and exit with an error
+	printf("Cube width: %d\n", cube->width);
+	printf("Cube height: %d\n", cube->height);
+	printf("Number of sprites: %d\n", cube->map.sprites);
+	printf("Ceil color: alfa=%d, red=%d, green=%d, blue=%d, color=%d\n",
+			get_t(cube->map.ceil_color), get_r(cube->map.ceil_color),
+			get_g(cube->map.ceil_color), get_b(cube->map.ceil_color),
+			cube->map.ceil_color);
+	printf("Floor color: alfa=%d, red=%d, green=%d, blue=%d, color=%d\n",
+			get_t(cube->map.floor_color), get_r(cube->map.floor_color),
+			get_g(cube->map.floor_color), get_b(cube->map.floor_color),
+			cube->map.floor_color);
+	printf("Map width: %d\n", cube->map.width);
+	printf("Map height: %d\n", cube->map.height);
+	for (int i = 0; i < TEXTURES; i++)
+	{
+		printf("%s\n", cube->map.paths[i]);
+		free(cube->map.paths[i]);
+	}
+	/*
+	printf("Map tile width: %d\n",
+		(cube->map.tile_width = cube->width / cube->map.width));
+	printf("Map tile height: %d\n",
+		(cube->map.tile_height = cube->height / cube->map.height));
+		*/
+}
+
+int		main(int argc, char **argv)
 {
 	t_cube	cube;
 
+	if (argc == 1)
+	{
+		ft_putstr_fd("Usage: ", 2);
+		ft_putstr_fd(argv[0], 2);
+		ft_putstr_fd(" map.cub\n", 2);
+		return (1);
+	}
 	ft_bzero(&cube, sizeof(cube));
-	parse_map(&cube);
-	initialize_cube(&cube);
-	initialize_image(&cube);
-	initialize_hooks(&cube);
-	update_cube(&cube);
-	save_bitmap(&cube);
-	mlx_loop_hook(cube.mlx, update_cube, &cube);
-	mlx_loop(cube.mlx);
+	parse_cub(argv[1], &cube);
+	//initialize_cube(&cube);
+	//initialize_image(&cube);
+	//initialize_hooks(&cube);
+	//update_cube(&cube);
+	//save_bitmap(&cube);
+	//mlx_loop_hook(cube.mlx, update_cube, &cube);
+	//mlx_loop(cube.mlx);
+	print_map(&cube);
 }

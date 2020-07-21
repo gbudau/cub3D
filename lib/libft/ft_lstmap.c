@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 20:22:20 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/18 18:58:12 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/20 13:00:49 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 			trav = trav->next;
 		}
 	}
-	return (ft_lstrev(new_lst));
+	ft_lstrev(&new_lst);
+	return (new_lst);
 }

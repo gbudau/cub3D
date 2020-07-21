@@ -1,19 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/24 02:16:40 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/19 20:53:50 by gbudau           ###   ########.fr       */
+/*   Created: 2020/07/20 20:34:45 by gbudau            #+#    #+#             */
+/*   Updated: 2020/07/20 21:15:33 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putendl_fd(char *s, int fd)
+int	ft_strcmp(const char *str1, const char *str2)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	if (str1 == str2)
+		return (0);
+	while (*str1 && *str2)
+	{
+		if (*str1 != *str2)
+			return (((unsigned char)*str1) - ((unsigned char)*str2));
+		str1++;
+		str2++;
+	}
+	return (((unsigned char)*str1) - ((unsigned char)*str2));
 }

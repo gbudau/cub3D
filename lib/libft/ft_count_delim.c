@@ -1,19 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   ft_count_delim.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/24 02:16:40 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/19 20:53:50 by gbudau           ###   ########.fr       */
+/*   Created: 2020/07/20 14:00:13 by gbudau            #+#    #+#             */
+/*   Updated: 2020/07/20 14:00:26 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putendl_fd(char *s, int fd)
+size_t	ft_count_delim(char const *s, char c)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	size_t i;
+	size_t state;
+
+	i = 0;
+	state = OUT;
+	while (*s != '\0')
+	{
+		if (*s == c)
+			state = OUT;
+		else if (state == OUT)
+		{
+			state = IN;
+			i++;
+		}
+		s++;
+	}
+	return (i);
 }

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/18 21:06:31 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/21 21:04:11 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@
 # include "../lib/minilibx-linux/mlx.h"
 # include <math.h>
 # include <X11/X.h>
-# include <stdlib.h>
 # include <limits.h>
-# include <unistd.h>
 # include <sys/stat.h>
 # include <fcntl.h>
 # define FOV 60
@@ -40,13 +38,26 @@
 # define FALSE 0
 # define TEXTURES 5
 
-enum	e_texture
+enum	e_textures
 {
 	EAST,
 	WEST,
 	SOUTH,
 	NORTH,
 	SPRITE
+};
+
+enum	e_flags
+{
+	RESOLUTION = 1,
+	NORTH_TEX = (1 << 1),
+	SOUTH_TEX = (1 << 2),
+	WEST_TEX = (1 << 3),
+	EAST_TEX = (1 << 4),
+	SPRITE_TEX = (1 << 5),
+	FLOOR_COL = (1 << 6),
+	CEIL_COL = (1 << 7),
+	IDENTIFIERS = ((1 << 8) - 1)
 };
 
 typedef struct	s_bitmap_file_header
@@ -123,7 +134,8 @@ typedef struct	s_sprite
 typedef	struct	s_map
 {
 	t_player	player;
-	char		**grid;
+	char		*paths[TEXTURES];
+	int			**grid;
 	int			width;
 	int			height;
 	int			tile_width;
@@ -163,6 +175,7 @@ typedef struct	s_cube
 	t_ray		*rays;
 	t_texture	texture[TEXTURES];
 	t_sprite	*sprites;
+	char		**info;
 	void		*mlx;
 	void		*win;
 	int			width;
@@ -184,6 +197,7 @@ void			draw_rectangle(t_cube *cube, t_point start,
 void			draw_line(t_cube *cube, t_point start, t_point end, int color);
 void			save_bitmap(t_cube *cube);
 void			quit_cube(t_cube *cube, int exit_code);
+void			parse_cub(char *path, t_cube *cube);
 
 /*
 ** Color functions
