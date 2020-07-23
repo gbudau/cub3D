@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/21 21:04:11 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/23 16:43:30 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,23 @@
 # define MINIMAP_SCALE 0.3f
 # define WALK_SPEED 1.0f
 # define TURN_SPEED 1.0f
-# define TRUE 1
-# define FALSE 0
 # define TEXTURES 5
+# define VALID_MAP_CHARS "012NSWE "
+# define SPAWN_ORIENTATION "NSWE"
+
+enum	e_bool
+{
+	FALSE,
+	TRUE
+};
+
+enum	e_grid
+{
+	EMPTY,
+	WALL,
+	SPACE,
+	FILL
+};
 
 enum	e_textures
 {
@@ -109,6 +123,8 @@ typedef struct	s_player
 	int		turn_direction;
 	int		walk_direction;
 	int		strafe_direction;
+	int		map_x;
+	int		map_y;
 }				t_player;
 
 typedef struct	s_image
@@ -128,6 +144,8 @@ typedef struct	s_sprite
 	float	dy;
 	float	sprite_dir;
 	float	player_dist;
+	int		map_x;
+	int		map_y;
 	int		texture_id;
 }				t_sprite;
 
@@ -136,6 +154,7 @@ typedef	struct	s_map
 	t_player	player;
 	char		*paths[TEXTURES];
 	int			**grid;
+	int			player_found;
 	int			width;
 	int			height;
 	int			tile_width;
@@ -176,6 +195,7 @@ typedef struct	s_cube
 	t_texture	texture[TEXTURES];
 	t_sprite	*sprites;
 	char		**info;
+	char		*row;
 	void		*mlx;
 	void		*win;
 	int			width;
@@ -198,6 +218,9 @@ void			draw_line(t_cube *cube, t_point start, t_point end, int color);
 void			save_bitmap(t_cube *cube);
 void			quit_cube(t_cube *cube, int exit_code);
 void			parse_cub(char *path, t_cube *cube);
+void			free_int_matrix(int **matrix, size_t height);
+void			boundary_fill(int x, int y, int *open, t_cube *cube);
+void			rev_boundary_fill(t_cube *cube);
 
 /*
 ** Color functions

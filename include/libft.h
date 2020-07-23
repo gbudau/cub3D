@@ -6,7 +6,7 @@
 /*   By: gbudau <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 21:34:03 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/21 19:35:03 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/22 16:43:07 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,11 @@ char		*ft_strjoin_free(char *s1, char *s2, size_t flag);
 int			get_next_line(int fd, char **line);
 char		*ft_strcpy(char *dst, const char *src);
 int			ft_abs(int n);
-size_t		ft_count_delim(char const *s, char c);
+size_t		ft_str_count_c(const char *s, char c);
 int			ft_strcmp(const char *str1, const char *str2);
 size_t		ft_strarrlen(char **info);
-void		ft_free_strarr(char **info);
+void		**ft_free_strarr(char **info);
+size_t		ft_str_count_s(const char *s, const char *delim);
+char		**ft_split_str(const char *s, const char *delim);
 
 #endif

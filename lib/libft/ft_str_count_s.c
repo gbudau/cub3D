@@ -1,27 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_free_strarr.c                                   :+:      :+:    :+:   */
+/*   ft_str_count_s.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/07/21 19:29:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/22 16:43:38 by gbudau           ###   ########.fr       */
+/*   Created: 2020/07/22 16:18:41 by gbudau            #+#    #+#             */
+/*   Updated: 2020/07/22 16:38:15 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	**ft_free_strarr(char **info)
+/*
+** Return the number of substrings found in s that are
+** separated by any character found in delim
+*/
+
+size_t	ft_str_count_s(const char *s, const char *delim)
 {
-	int	i;
+	size_t i;
+	size_t state;
 
 	i = 0;
-	while (info[i])
+	state = OUT;
+	while (*s != '\0')
 	{
-		free(info[i]);
-		i++;
+		if (ft_strchr(delim, *s))
+			state = OUT;
+		else if (state == OUT)
+		{
+			state = IN;
+			i++;
+		}
+		s++;
 	}
-	free(info);
-	return (NULL);
+	return (i);
 }

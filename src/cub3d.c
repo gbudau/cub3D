@@ -6,58 +6,25 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/21 21:02:42 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/23 19:49:36 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
 // Delete/replace later
-#define MAP_WIDTH 13
-#define MAP_HEIGHT 13
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
 #include <stdio.h>
 
 int		update_cube(t_cube *cube);
-void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube);
+void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays);
 float	normalize_angle(float angle);
 
-/*
-int grid[MAP_HEIGHT][MAP_WIDTH] =
-	{
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1},
-    {1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1},
-    {1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1},
-    {1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
-*/
-
-int grid[MAP_HEIGHT][MAP_WIDTH] =
-	{
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
+int	min(int a, int b)
+{
+	if (a < b)
+		return (a);
+	return (b);
+}
 
 void	quit_cube(t_cube *cube, int exit_code)
 {
@@ -65,6 +32,7 @@ void	quit_cube(t_cube *cube, int exit_code)
 
 	free(cube->rays);
 	free(cube->sprites);
+	free_int_matrix(cube->map.grid, cube->map.height);
 	i = 0;
 	while (i < TEXTURES)
 	{
@@ -82,7 +50,8 @@ void	quit_cube(t_cube *cube, int exit_code)
 
 void	load_texture(t_cube *cube, t_texture *texture, char *path)
 {
-	texture->image.img = mlx_xpm_file_to_image(cube->mlx, path, &texture->width, &texture->height);
+	texture->image.img = mlx_xpm_file_to_image(cube->mlx, path,
+			&texture->width, &texture->height);
 	if (!texture->image.img)
 		quit_cube(cube, EXIT_FAILURE);
 	texture->image.addr =  mlx_get_data_addr(
@@ -94,52 +63,45 @@ void	load_texture(t_cube *cube, t_texture *texture, char *path)
 
 int		initialize_player(t_player *player, t_cube *cube)
 {
-	player->x = cube->map.tile_width + 1;
-	player->y = cube->map.tile_height + 1;
 	player->turn_direction = 0;
 	player->walk_direction = 0;
 	player->strafe_direction = 0;
-	player->rotation_angle = 0;
 	player->walk_speed = WALK_SPEED;
 	player->turn_speed = TURN_SPEED * (PI / 180);
+	cube->map.player.x = cube->map.tile_width *
+		cube->map.player.map_x + cube->map.tile_width / 2;
+	cube->map.player.y = cube->map.tile_height *
+		cube->map.player.map_y + cube->map.tile_height / 2;
 	return (0);
 }
 
 int		initialize_sprites(t_cube *cube)
 {
-	cube->sprites = malloc(sizeof(t_sprite) * cube->map.sprites);
-	if (!cube->sprites)
-		quit_cube(cube, EXIT_FAILURE);
-	// TODO: Replace this hardcoded values with the values from the map
-	cube->sprites[0].x = cube->width / 2;
-	cube->sprites[0].y = cube->height / 4;
-	cube->sprites[0].texture_id = SPRITE;
-	cube->sprites[1].x = cube->width / 2;
-	cube->sprites[1].y = cube->height / 2;
-	cube->sprites[1].texture_id = SPRITE;
+	int	i;
+
+	i = 0;
+	while (i < cube->map.sprites)
+	{
+		cube->sprites[i].x = cube->map.tile_width *
+			cube->sprites[i].map_x + cube->map.tile_width / 2;
+		cube->sprites[i].y = cube->map.tile_height *
+			cube->sprites[i].map_y + cube->map.tile_height / 2;
+		i++;
+	}
 	return (0);
 }
 
-/*
-void	parse_cub(char *path, t_cube *cube)
+int		initialize_assets(t_cube *cube)
 {
-	(void)path;
-	// TODO: Check if cube->width < map.width
-	// or cube->height < map.height and exit with an error
-	cube->width = WINDOW_WIDTH;
-	cube->height = WINDOW_HEIGHT;
-	cube->map.sprites = 2;
-	cube->map.ceil_color = 0xff7ec0ee;
-	cube->map.floor_color = 0xff567e3a;
-	cube->map.width = MAP_WIDTH;
-	cube->map.height = MAP_HEIGHT;
+	if (cube->width < cube->map.width ||
+			cube->height < cube->map.height)
+		quit_cube(cube, EXIT_FAILURE);
 	cube->map.tile_width = cube->width / cube->map.width;
 	cube->map.tile_height = cube->height / cube->map.height;
 	initialize_player(&cube->map.player, cube);
 	initialize_sprites(cube);
 	return (0);
 }
-*/
 
 int		initialize_image(t_cube *cube)
 {
@@ -150,18 +112,23 @@ int		initialize_image(t_cube *cube)
 			&cube->image.bits_per_pixel,
 			&cube->image.size_line, 
 			&cube->image.endian);
-	// TODO: Save the path when parsing the map then free at exit
-	load_texture(cube, &cube->texture[EAST], "pics/bluestone.xpm");
-	load_texture(cube, &cube->texture[WEST], "pics/wood.xpm");
-	load_texture(cube, &cube->texture[SOUTH], "pics/greystone.xpm");
-	load_texture(cube, &cube->texture[NORTH], "pics/colorstone.xpm");
-	load_texture(cube, &cube->texture[SPRITE], "pics/barrel.xpm");
+	load_texture(cube, &cube->texture[EAST], cube->map.paths[EAST]);
+	load_texture(cube, &cube->texture[WEST], cube->map.paths[WEST]);
+	load_texture(cube, &cube->texture[SOUTH], cube->map.paths[SOUTH] );
+	load_texture(cube, &cube->texture[NORTH], cube->map.paths[NORTH]);
+	load_texture(cube, &cube->texture[SPRITE], cube->map.paths[SPRITE]);
 	return (0);
 }
 
 int		initialize_cube(t_cube *cube)
 {
+	int	width;
+	int	height;
+
 	cube->mlx = mlx_init();
+	mlx_get_screen_size(cube->mlx, &width, &height);
+	cube->width = min(cube->width, width);
+	cube->height = min(cube->height, height);
 	cube->win = mlx_new_window(cube->mlx, cube->width,
 			cube->height, WINDOW_TITLE);
 	cube->rays = malloc(sizeof(t_ray) * cube->width);
@@ -229,7 +196,7 @@ void	cast_all_rays(t_cube *cube)
 	column = 0;
 	while (column < cube->width)
 	{
-		cast_ray(ray_angle, column, &cube->map, cube->rays, cube);
+		cast_ray(ray_angle, column, &cube->map, cube->rays);
 		ray_angle += cube->angle_step;
 		column++;
 	}
@@ -237,8 +204,7 @@ void	cast_all_rays(t_cube *cube)
 
 int		grid_color(int row, int col, t_cube *cube)
 {
-	(void)cube;
-	return (grid[row][col] == 1 ? 0xffffffff : 0xff000000);
+	return (cube->map.grid[row][col] == 1 ? 0xffffffff : 0xff000000);
 }
 
 void	draw_minimap(t_cube *cube)
@@ -292,13 +258,14 @@ void	render_rays(t_ray *rays, t_cube *cube)
 	}
 }
 
-void	move_player(t_player *player, t_map *map)
+void	move_player(t_player *player, t_map *map, t_cube *cube)
 {
 	float	move_step;
 	float	new_x;
 	float	new_y;
 	float	strafe_angle;
 	float	strafe_step;
+	int		**grid;
 
 	player->rotation_angle += player->turn_direction * player->turn_speed;
 	player->rotation_angle = normalize_angle(player->rotation_angle);
@@ -307,6 +274,7 @@ void	move_player(t_player *player, t_map *map)
 	move_step = player->walk_direction * player->walk_speed; 
 	new_x = player->x + cos(player->rotation_angle) * move_step + cos(player->rotation_angle + strafe_angle) * strafe_step;
 	new_y = player->y + sin(player->rotation_angle) * move_step + sin(player->rotation_angle + strafe_angle) * strafe_step;
+	grid = cube->map.grid;
 
 	if (grid[(int)(new_y / map->tile_height)][(int)(new_x / map->tile_width)] == 0 &&
 			grid[(int)((new_y - 1) / map->tile_height)][(int)(new_x / map->tile_width)] == 0 &&
@@ -338,17 +306,17 @@ void	draw_sprites_minimap(t_cube *cube)
 {
 	t_point start;
 	t_point end;
-	int		sprite;
+	int		i;
 
-	sprite = 0;
-	while (sprite < cube->map.sprites)
+	i = 0;
+	while (i < cube->map.sprites)
 	{
-		start.x = (cube->sprites[sprite].x - 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
-		start.y = (cube->sprites[sprite].y - 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
-		end.x = (cube->sprites[sprite].x + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
-		end.y = (cube->sprites[sprite].y + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
+		start.x = (cube->sprites[i].x - 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
+		start.y = (cube->sprites[i].y - 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
+		end.x = (cube->sprites[i].x + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
+		end.y = (cube->sprites[i].y + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
 		draw_rectangle(cube, start, end, 0xff0000ff);
-		sprite++;
+		i++;
 	}
 }
 
@@ -360,17 +328,17 @@ float	normalize_angle(float angle)
 	return (angle);
 }
 
-int		map_has_wall_at(int x, int y, t_map *map, t_cube *cube)
+int		map_has_wall_at(int x, int y, t_map *map)
 {
 	int	row;
 	int	col;
 
-	if (x < 0 || y < 0 || x >= cube->map.tile_width * cube->map.width ||
-			y >= cube->map.tile_height * cube->map.height)
+	if (x < 0 || x >= map->tile_width * map->width ||
+			y < 0 || y >= map->tile_height * map->height)
 		return (TRUE);
 	row = y / map->tile_height;
 	col = x / map->tile_width;
-	return (grid[row][col] != 0);
+	return (map->grid[row][col] == 1);
 }
 
 float	distance_between_points(float x1, float x2, float y1, float y2)
@@ -378,7 +346,7 @@ float	distance_between_points(float x1, float x2, float y1, float y2)
 	return (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)));
 }
 
-void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube)
+void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays)
 {
 	int 	is_ray_facing_down;
 	int 	is_ray_facing_up;
@@ -394,7 +362,6 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 	int		found_horz_wall_hit;
 	float	horz_wall_hit_x;
 	float	horz_wall_hit_y;
-	int		horz_wall_content;
 	float	next_horz_touch_x;
 	float	next_horz_touch_y;
 	float	horz_hit_distance;
@@ -402,11 +369,9 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 	int		found_vert_wall_hit;
 	float	vert_wall_hit_x;
 	float	vert_wall_hit_y;
-	int		vert_wall_content;
 	float	next_vert_touch_x;
 	float	next_vert_touch_y;
 	float	vert_hit_distance;
-
 
 	ray_angle = normalize_angle(ray_angle);
 	is_ray_facing_down = ray_angle > 0 && ray_angle < PI;
@@ -418,7 +383,6 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 	found_horz_wall_hit = FALSE;
 	horz_wall_hit_x = 0;
 	horz_wall_hit_y = 0;
-	horz_wall_content = 0;
 
 	// Find the y-coordinate of the closest horizontal grid intersection
 	yintercept = (int)(map->player.y / map->tile_height) * map->tile_height;
@@ -448,11 +412,10 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 		x_to_check = next_horz_touch_x;
 		y_to_check = next_horz_touch_y + (is_ray_facing_up ? -1 : 1);
 
-		if (map_has_wall_at(x_to_check, y_to_check, map, cube))
+		if (map_has_wall_at(x_to_check, y_to_check, map))
 		{
 			horz_wall_hit_x = next_horz_touch_x;
 			horz_wall_hit_y = next_horz_touch_y;
-			horz_wall_content = grid[(int)(y_to_check / map->tile_height)][(int)(x_to_check / map->tile_width)];
 			found_horz_wall_hit = TRUE;
 			break;
 		}
@@ -467,7 +430,6 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 	found_vert_wall_hit = FALSE;
 	vert_wall_hit_x = 0;
 	vert_wall_hit_y = 0;
-	vert_wall_content = 0;
 
 	// Find the x-coordinate of the closest vertical grid intersection
 	xintercept = (int)(map->player.x / map->tile_width) * map->tile_width;
@@ -497,11 +459,10 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 		x_to_check = next_vert_touch_x + (is_ray_facing_left ? -1 : 1);
 		y_to_check = next_vert_touch_y;
 
-		if (map_has_wall_at(x_to_check, y_to_check, map, cube))
+		if (map_has_wall_at(x_to_check, y_to_check, map))
 		{
 			vert_wall_hit_x = next_vert_touch_x;
 			vert_wall_hit_y = next_vert_touch_y;
-			vert_wall_content = grid[(int)(y_to_check / map->tile_height)][(int)(x_to_check / map->tile_width)];
 			found_vert_wall_hit = TRUE;
 			break;
 		}
@@ -533,7 +494,6 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 		rays[column].distance = vert_hit_distance;
 		rays[column].wall_hit_x = vert_wall_hit_x;
 		rays[column].wall_hit_y = vert_wall_hit_y;
-		rays[column].wall_hit_content = vert_wall_content;
 		rays[column].was_hit_vert = TRUE;
 		rays[column].was_hit_horz = FALSE;
 	}
@@ -542,7 +502,6 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays, t_cube *cube
 		rays[column].distance = horz_hit_distance;
 		rays[column].wall_hit_x = horz_wall_hit_x;
 		rays[column].wall_hit_y = horz_wall_hit_y;
-		rays[column].wall_hit_content = horz_wall_content;
 		rays[column].was_hit_horz = TRUE;
 		rays[column].was_hit_vert = FALSE;
 	}
@@ -774,7 +733,7 @@ int		render_cube(t_cube *cube)
 
 int		update_cube(t_cube *cube)
 {
-	move_player(&cube->map.player, &cube->map);
+	move_player(&cube->map.player, &cube->map, cube);
 	cast_all_rays(cube);
 	render_cube(cube);
 	mlx_put_image_to_window(cube->mlx, cube->win,
@@ -785,8 +744,6 @@ int		update_cube(t_cube *cube)
 
 void	print_map(t_cube *cube)
 {
-	// TODO: Check if cube->width < map.width
-	// or cube->height < map.height and exit with an error
 	printf("Cube width: %d\n", cube->width);
 	printf("Cube height: %d\n", cube->height);
 	printf("Number of sprites: %d\n", cube->map.sprites);
@@ -803,15 +760,40 @@ void	print_map(t_cube *cube)
 	for (int i = 0; i < TEXTURES; i++)
 	{
 		printf("%s\n", cube->map.paths[i]);
-		free(cube->map.paths[i]);
 	}
-	/*
+	for (int i = 0;i < cube->map.sprites; i++)
+	{
+		printf("Sprite map_y %d\n", cube->sprites[i].map_y);
+		printf("Sprite map_x %d\n", cube->sprites[i].map_x);
+		printf("Sprite texture %d\n", cube->sprites[i].texture_id);
+	}
+	printf("Player map_y=%d, map_x=%d\n", cube->map.player.map_y, cube->map.player.map_x);
+	printf("Player position %f\n", cube->map.player.rotation_angle);
 	printf("Map tile width: %d\n",
 		(cube->map.tile_width = cube->width / cube->map.width));
 	printf("Map tile height: %d\n",
 		(cube->map.tile_height = cube->height / cube->map.height));
-		*/
+	printf("Grid\n");
+	for (int y = 0; y < cube->map.height; y++)
+	{
+		for (int x = 0; x < cube->map.width; x++)
+		{
+			if (cube->map.grid[y][x] != 2)
+				printf("%d", cube->map.grid[y][x]);
+			else
+				printf("%c", ' ');
+		}
+		printf("\n");
+	}
 }
+
+/*
+**
+**	DESCRIPTION
+**
+**	RETURN VALUES
+**
+*/
 
 int		main(int argc, char **argv)
 {
@@ -826,12 +808,13 @@ int		main(int argc, char **argv)
 	}
 	ft_bzero(&cube, sizeof(cube));
 	parse_cub(argv[1], &cube);
-	//initialize_cube(&cube);
-	//initialize_image(&cube);
-	//initialize_hooks(&cube);
-	//update_cube(&cube);
-	//save_bitmap(&cube);
-	//mlx_loop_hook(cube.mlx, update_cube, &cube);
-	//mlx_loop(cube.mlx);
+	initialize_cube(&cube);
+	initialize_assets(&cube);
+	initialize_image(&cube);
+	initialize_hooks(&cube);
+	update_cube(&cube);
+	save_bitmap(&cube);
 	print_map(&cube);
+	mlx_loop_hook(cube.mlx, update_cube, &cube);
+	mlx_loop(cube.mlx);
 }

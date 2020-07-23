@@ -6,13 +6,13 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/21 21:03:42 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/23 16:31:41 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3d
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g #-fsanitize=address  -O3
+CFLAGS = -Wall -Werror -Wextra -g -fsanitize=address #-O3
 OFLAGS = -c -o
 LFLAGS = -lmlx -lft -lXext -lX11 -lm
 RMF = rm -rf
@@ -25,7 +25,7 @@ OBJ_DIR := obj
 INC_DIR = include
 
 _OBJ = cub3d.o cub3d_image_utils.o colors.o colors_utils.o save_bitmap.o \
-	   parse_cub.o
+	   parse_cub.o boundary_fill.o
 OBJ := $(patsubst %, $(OBJ_DIR)/%, $(_OBJ))
 
 _DEPS = cub3d.h libft.h

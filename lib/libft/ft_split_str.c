@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   ft_split_str.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbudau <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/18 22:19:21 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/22 16:42:10 by gbudau           ###   ########.fr       */
+/*   Created: 2020/07/22 15:57:28 by gbudau            #+#    #+#             */
+/*   Updated: 2020/07/22 16:39:22 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 ** Return the array of substrings or NULL in case of error
 */
 
-static char		**ft_strtomatr(char **split, const char *s, char c)
+static char		**ft_strtomatr(char **split, const char *s, const char *delim)
 {
 	char const	*word_start;
 	int			i;
@@ -27,7 +27,7 @@ static char		**ft_strtomatr(char **split, const char *s, char c)
 	state = 0;
 	while (*s != '\0')
 	{
-		if (*s == c)
+		if (ft_strchr(delim, *s))
 			state = OUT;
 		else if (state == OUT)
 		{
@@ -35,8 +35,8 @@ static char		**ft_strtomatr(char **split, const char *s, char c)
 			word_start = s;
 			i++;
 		}
-		if ((state == IN && *(s + 1) == c) || (state == IN && *(s + 1) == '\0'))
-			if ((split[i] = ft_strndup(word_start, s - word_start + 1)) == NULL)
+		if ((state && ft_strchr(delim, *(s + 1))) || (state && !*(s + 1)))
+			if (!(split[i] = ft_strndup(word_start, s - word_start + 1)))
 			{
 				ft_free_strarr(split);
 				return (NULL);
@@ -52,15 +52,15 @@ static char		**ft_strtomatr(char **split, const char *s, char c)
 ** Return the array of substrings or NULL in case of error
 */
 
-char			**ft_split(const char *s, char c)
+char			**ft_split_str(const char *s, const char *delim)
 {
 	size_t		i;
 	char		**split;
 
-	if (s == NULL)
+	if (s == NULL || delim == NULL)
 		return (NULL);
-	i = ft_str_count_c(s, c);
+	i = ft_str_count_s(s, delim);
 	if (!(split = ft_calloc(i + 1, sizeof(char *))))
 		return (NULL);
-	return (ft_strtomatr(split, s, c));
+	return (ft_strtomatr(split, s, delim));
 }
