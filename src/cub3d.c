@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/24 17:17:50 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/24 23:02:48 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int		update_cube(t_cube *cube);
 void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays);
 float	normalize_angle(float angle);
 
-int	min(int a, int b)
+int	ft_min(int a, int b)
 {
 	if (a < b)
 		return (a);
@@ -68,10 +68,8 @@ int		initialize_player(t_player *player, t_cube *cube)
 	player->strafe_direction = 0;
 	player->walk_speed = WALK_SPEED;
 	player->turn_speed = TURN_SPEED * (PI / 180);
-	cube->map.player.x = cube->map.tile_width *
-		cube->map.player.map_x + cube->map.tile_width / 2;
-	cube->map.player.y = cube->map.tile_height *
-		cube->map.player.map_y + cube->map.tile_height / 2;
+	cube->map.player.x = cube->map.player.map_x * TILE_SIZE + TILE_SIZE / 2;
+	cube->map.player.y = cube->map.player.map_y * TILE_SIZE + TILE_SIZE / 2;
 	return (0);
 }
 
@@ -82,10 +80,8 @@ int		initialize_sprites(t_cube *cube)
 	i = 0;
 	while (i < cube->map.sprites)
 	{
-		cube->sprites[i].x = cube->map.tile_width *
-			cube->sprites[i].map_x + cube->map.tile_width / 2;
-		cube->sprites[i].y = cube->map.tile_height *
-			cube->sprites[i].map_y + cube->map.tile_height / 2;
+		cube->sprites[i].x = cube->sprites[i].map_x * TILE_SIZE + TILE_SIZE / 2;
+		cube->sprites[i].y = cube->sprites[i].map_y * TILE_SIZE + TILE_SIZE / 2;
 		i++;
 	}
 	return (0);
@@ -93,11 +89,6 @@ int		initialize_sprites(t_cube *cube)
 
 int		initialize_assets(t_cube *cube)
 {
-	if (cube->width < cube->map.width ||
-			cube->height < cube->map.height)
-		quit_cube(cube, EXIT_FAILURE);
-	cube->map.tile_width = cube->width / cube->map.width;
-	cube->map.tile_height = cube->height / cube->map.height;
 	initialize_player(&cube->map.player, cube);
 	initialize_sprites(cube);
 	return (0);
@@ -127,8 +118,8 @@ int		initialize_cube(t_cube *cube)
 
 	cube->mlx = mlx_init();
 	mlx_get_screen_size(cube->mlx, &width, &height);
-	cube->width = min(cube->width, width);
-	cube->height = min(cube->height, height);
+	cube->width = ft_min(cube->width, width);
+	cube->height = ft_min(cube->height, height);
 	if (cube->savebmp == 0)
 	{
 		cube->win = mlx_new_window(cube->mlx, cube->width,
@@ -226,24 +217,24 @@ void	draw_minimap(t_cube *cube)
 
 	start.y = 0;
 	start.x = 0;
-	while (start.y < cube->height)
+	while (start.y < cube->map.height * TILE_SIZE)
 	{
 		start.x = 0;
-		while (start.x < cube->width)
+		while (start.x < cube->map.width * TILE_SIZE)
 		{
-			row = start.y / cube->map.tile_height;
-			col = start.x / cube->map.tile_width;
+			row = start.y / TILE_SIZE;
+			col = start.x / TILE_SIZE;
 			if (row < cube->map.height && col < cube->map.width)
 			{
 				scaled.x = start.x * MINIMAP_SCALE;
 				scaled.y = start.y * MINIMAP_SCALE;
-				end.x = scaled.x + cube->map.tile_width * MINIMAP_SCALE;
-				end.y = scaled.y + cube->map.tile_height * MINIMAP_SCALE;
+				end.x = scaled.x + TILE_SIZE * MINIMAP_SCALE;
+				end.y = scaled.y + TILE_SIZE * MINIMAP_SCALE;
 				draw_rectangle(cube, scaled, end, grid_color(row, col, cube));
 			}
-			start.x += cube->map.tile_width;
+			start.x += TILE_SIZE;
 		}
-		start.y += cube->map.tile_height;
+		start.y += TILE_SIZE;
 	}
 }
 
@@ -276,6 +267,7 @@ void	move_player(t_player *player, t_map *map, t_cube *cube)
 	float	strafe_step;
 	int		**grid;
 
+	(void)map;
 	player->rotation_angle += player->turn_direction * player->turn_speed;
 	player->rotation_angle = normalize_angle(player->rotation_angle);
 	strafe_step = player->strafe_direction * player->walk_speed;
@@ -285,9 +277,9 @@ void	move_player(t_player *player, t_map *map, t_cube *cube)
 	new_y = player->y + sin(player->rotation_angle) * move_step + sin(player->rotation_angle + strafe_angle) * strafe_step;
 	grid = cube->map.grid;
 
-	if (grid[(int)(new_y / map->tile_height)][(int)(new_x / map->tile_width)] == 0 &&
-			grid[(int)((new_y - 1) / map->tile_height)][(int)(new_x / map->tile_width)] == 0 &&
-			grid[(int)(new_y / map->tile_height)][(int)((new_x - 1) / map->tile_width)] == 0)
+	if (grid[(int)(new_y / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == 0 &&
+			grid[(int)((new_y - 1) / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == 0 &&
+			grid[(int)(new_y / TILE_SIZE)][(int)((new_x - 1) / TILE_SIZE)] == 0)
 	{
 		player->x = new_x;
 		player->y = new_y;
@@ -342,11 +334,11 @@ int		map_has_wall_at(int x, int y, t_map *map)
 	int	row;
 	int	col;
 
-	if (x < 0 || x >= map->tile_width * map->width ||
-			y < 0 || y >= map->tile_height * map->height)
+	if (x < 0 || x >= TILE_SIZE * map->width ||
+			y < 0 || y >= TILE_SIZE * map->height)
 		return (TRUE);
-	row = y / map->tile_height;
-	col = x / map->tile_width;
+	row = y / TILE_SIZE;
+	col = x / TILE_SIZE;
 	return (map->grid[row][col] == 1);
 }
 
@@ -394,15 +386,15 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays)
 	horz_wall_hit_y = 0;
 
 	// Find the y-coordinate of the closest horizontal grid intersection
-	yintercept = (int)(map->player.y / map->tile_height) * map->tile_height;
-	yintercept += is_ray_facing_down ? map->tile_height : 0;
+	yintercept = (int)(map->player.y / TILE_SIZE) * TILE_SIZE;
+	yintercept += is_ray_facing_down ? TILE_SIZE : 0;
 
 	// Find the x-coordinate of the closest horizontal grid intersection
 	xintercept = map->player.x + (yintercept - map->player.y) / tan(ray_angle);
 
 	// Calculate the increment xstep and ystep
 
-	ystep = map->tile_height;
+	ystep = TILE_SIZE;
 	ystep *= is_ray_facing_up ? -1 : 1;
 
 	xstep = ystep / tan(ray_angle);
@@ -414,9 +406,9 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays)
 
 	// Increment xstep and ystep until we find a wall
 	while (next_horz_touch_x >= 0 &&
-			next_horz_touch_x < map->tile_width * map->width &&
+			next_horz_touch_x < TILE_SIZE * map->width &&
 			next_horz_touch_y >= 0 &&
-			next_horz_touch_y < map->tile_height * map->tile_height)
+			next_horz_touch_y < TILE_SIZE * map->height)
 	{
 		x_to_check = next_horz_touch_x;
 		y_to_check = next_horz_touch_y + (is_ray_facing_up ? -1 : 1);
@@ -441,15 +433,15 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays)
 	vert_wall_hit_y = 0;
 
 	// Find the x-coordinate of the closest vertical grid intersection
-	xintercept = (int)(map->player.x / map->tile_width) * map->tile_width;
-	xintercept += is_ray_facing_right ? map->tile_width : 0;
+	xintercept = (int)(map->player.x / TILE_SIZE) * TILE_SIZE;
+	xintercept += is_ray_facing_right ? TILE_SIZE : 0;
 
 	// Find the x-coordinate of the closest horizontal grid intersection
 	yintercept = map->player.y + (xintercept - map->player.x) * tan(ray_angle);
 
 	// Calculate the increment xstep and ystep
 
-	xstep = map->tile_width;
+	xstep = TILE_SIZE;
 	xstep *= is_ray_facing_left ? -1 : 1;
 
 	ystep = xstep * tan(ray_angle);
@@ -461,9 +453,9 @@ void	cast_ray(float ray_angle, int column, t_map *map, t_ray *rays)
 
 	// Increment xstep and ystep until we find a wall
 	while (next_vert_touch_x >= 0 &&
-			next_vert_touch_x < map->tile_width * map->width &&
+			next_vert_touch_x < TILE_SIZE * map->width &&
 			next_vert_touch_y >= 0 &&
-			next_vert_touch_y < map->tile_height * map->height)
+			next_vert_touch_y < TILE_SIZE * map->height)
 	{
 		x_to_check = next_vert_touch_x + (is_ray_facing_left ? -1 : 1);
 		y_to_check = next_vert_touch_y;
@@ -571,7 +563,7 @@ int		project_walls(t_cube *cube)
 	while (i < cube->width)
 	{
 		perp_distance = cube->rays[i].distance * cos(cube->rays[i].ray_angle - cube->map.player.rotation_angle);
-		projected_wall_height = (cube->map.tile_height / perp_distance) * cube->dist_proj_plane;
+		projected_wall_height = (TILE_SIZE / perp_distance) * cube->dist_proj_plane;
 		wall_strip_height = projected_wall_height;
 		wall_top_pixel = (cube->height / 2) - (wall_strip_height / 2);
 		wall_top_pixel = wall_top_pixel < 0 ? 0 : wall_top_pixel;
@@ -677,40 +669,38 @@ int		sort_sprites(t_cube *cube)
 void	render_sprite(t_cube *cube, int sprite_idx, int texture_id)
 {
 	int	sprite_size;
-	int	h_offset;
-	int	v_offset;
-	int	i;
-	int	j;
+	int	y_offset;
+	int	x_offset;
+	int	y;
+	int	x;
 
-	sprite_size = cube->height / cube->sprites[sprite_idx].player_dist *
-						cube->texture[texture_id].height;
-	h_offset = (cube->sprites[sprite_idx].sprite_dir -
+	sprite_size = cube->width / cube->sprites[sprite_idx].player_dist * TILE_SIZE;
+	y_offset = (cube->height / 2) - (sprite_size / 2);
+	x_offset = (cube->sprites[sprite_idx].sprite_dir -
 			cube->map.player.rotation_angle) *
 			cube->width + (cube->width / 2) - (sprite_size / 2);
-	v_offset = (cube->height / 2) - (sprite_size / 2);
-	
-	i = 0;
-	while (i < sprite_size)
+	y = 0;
+	while (y < sprite_size)
 	{
-        if ((h_offset + i >= 0 && h_offset + i < cube->width) &&
-			(cube->rays[h_offset + i].distance > cube->sprites[sprite_idx].player_dist))
+		if (y_offset + y >= 0 && y_offset + y < cube->height)
 		{
-			j = 0;
-			while (j < sprite_size)
+			x = 0;
+			while (x < sprite_size)
 			{
-				if (v_offset + j >= 0 && v_offset + j < cube->height)
+				if ((x_offset + x >= 0 && x_offset + x < cube->width) &&
+					(cube->rays[x_offset + x].distance > cube->sprites[sprite_idx].player_dist))
 				{
 					int color = pixel_get(&cube->texture[texture_id].image,
-							i * cube->texture[texture_id].height / sprite_size,
-							j*cube->texture[texture_id].width/sprite_size);
+							x * cube->texture[texture_id].height / sprite_size,
+							y * cube->texture[texture_id].width / sprite_size);
 					if (color)
-						pixel_put(&cube->image, h_offset+i, v_offset+j, color);
+						pixel_put(&cube->image, x_offset + x, y_offset + y, color);
 				}
-				j++;
+				x++;
 			}
-        }
-		i++;
-    }
+		}
+		y++;
+	}
 }
 
 int		draw_sprites(t_cube *cube)
@@ -785,10 +775,10 @@ void	print_map(t_cube *cube)
 	}
 	printf("Player map_y=%d, map_x=%d\n", cube->map.player.map_y, cube->map.player.map_x);
 	printf("Player position %f\n", cube->map.player.rotation_angle);
-	printf("Map tile width: %d\n",
-		(cube->map.tile_width = cube->width / cube->map.width));
-	printf("Map tile height: %d\n",
-		(cube->map.tile_height = cube->height / cube->map.height));
+	//printf("Map tile width: %d\n",
+	//	(cube->map.tile_width = cube->width / cube->map.width));
+	//printf("Map tile height: %d\n",
+	//	(cube->map.tile_height = cube->height / cube->map.height));
 	printf("Grid\n");
 	for (int y = 0; y < cube->map.height; y++)
 	{

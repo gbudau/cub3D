@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/19 17:53:27 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/23 16:00:41 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/24 22:47:10 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -394,8 +394,8 @@ void	parse_map(t_list *trav, t_list *head, t_cube *cube)
 	if (check_map(trav, cube) == -1)
 		free_lst_quit(head, cube);
 	if (cube->map.player_found != 1 ||
-			(cube->width >= 0 && cube->width < cube->map.width) ||
-			(cube->height >= 0 && cube->height < cube->map.height))
+			cube->width <= 0 ||
+			cube->height <= 0)
 		free_lst_quit(head, cube);
 	if (save_map(trav, cube) == -1)
 		free_lst_quit(head, cube);
