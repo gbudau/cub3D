@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/23 16:43:30 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/23 23:41:16 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,14 @@
 # define KEY_S 115
 # define KEY_W 119
 # define KEY_Q 113
+# define KEY_M 109
 # define KEY_ESC 65307
 # define KEY_AR_L 65361
 # define KEY_AR_R 65363
 # define WINDOW_TITLE "cub3d"
 # define MINIMAP_SCALE 0.3f
-# define WALK_SPEED 1.0f
-# define TURN_SPEED 1.0f
+# define WALK_SPEED 3.0f
+# define TURN_SPEED 3.0f
 # define TEXTURES 5
 # define VALID_MAP_CHARS "012NSWE "
 # define SPAWN_ORIENTATION "NSWE"
@@ -200,6 +201,8 @@ typedef struct	s_cube
 	void		*win;
 	int			width;
 	int			height;
+	int			minimap;
+	int			savebmp;
 	float		fov_angle;
 	float		half_fov_angle;
 	float		angle_step;

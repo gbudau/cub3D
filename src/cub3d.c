@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/23 22:19:10 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/24 17:17:50 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,11 @@ int		initialize_cube(t_cube *cube)
 	mlx_get_screen_size(cube->mlx, &width, &height);
 	cube->width = min(cube->width, width);
 	cube->height = min(cube->height, height);
-	cube->win = mlx_new_window(cube->mlx, cube->width,
-			cube->height, WINDOW_TITLE);
+	if (cube->savebmp == 0)
+	{
+		cube->win = mlx_new_window(cube->mlx, cube->width,
+				cube->height, WINDOW_TITLE);
+	}
 	cube->rays = malloc(sizeof(t_ray) * cube->width);
 	if (cube->rays == NULL)
 		quit_cube(cube, EXIT_FAILURE);
@@ -159,6 +162,8 @@ int		key_press(int	keycode, t_cube *cube)
 		cube->map.player.turn_direction = 1;
 	if (keycode == KEY_AR_L)
 		cube->map.player.turn_direction = -1;
+	if (keycode == KEY_M)
+		cube->minimap = !cube->minimap;
 	return (0);
 }
 
@@ -204,7 +209,11 @@ void	cast_all_rays(t_cube *cube)
 
 int		grid_color(int row, int col, t_cube *cube)
 {
-	return (cube->map.grid[row][col] == 1 ? 0xffffffff : 0xff000000);
+	if (cube->map.grid[row][col] == EMPTY)
+		return (0xffcdd4e3);
+	else if (cube->map.grid[row][col] == SPACE)
+		return (0xff000000);
+	return (0xff003366);
 }
 
 void	draw_minimap(t_cube *cube)
@@ -246,7 +255,7 @@ void	render_rays(t_ray *rays, t_cube *cube)
 	t_point	end;
 
 	i = 0;
-	color = 0xffff0000;
+	color = 0xffffff00;
 	while (i < cube->width)
 	{
 		start.x = cube->map.player.x * MINIMAP_SCALE;
@@ -294,12 +303,12 @@ void	draw_player(t_cube *cube, t_player *player)
 	start.y = (player->y - 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
 	end.x = (player->x + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
 	end.y = (player->y + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
-	draw_rectangle(cube, start, end, 0xffffff00); 
+	draw_rectangle(cube, start, end, 0xff101010); 
 	start.x = (player->x) * MINIMAP_SCALE;
 	start.y = (player->y) * MINIMAP_SCALE;
 	end.x = start.x + cos(player->rotation_angle) * 40 * MINIMAP_SCALE;
 	end.y = start.y + sin(player->rotation_angle) * 40 * MINIMAP_SCALE;
-	draw_line(cube, start, end, 0xffffffff);
+	draw_line(cube, start, end, 0xff333333);
 }
 
 void	draw_sprites_minimap(t_cube *cube)
@@ -315,7 +324,7 @@ void	draw_sprites_minimap(t_cube *cube)
 		start.y = (cube->sprites[i].y - 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
 		end.x = (cube->sprites[i].x + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
 		end.y = (cube->sprites[i].y + 20 * MINIMAP_SCALE) * MINIMAP_SCALE;
-		draw_rectangle(cube, start, end, 0xff0000ff);
+		draw_rectangle(cube, start, end, 0xffffa500);
 		i++;
 	}
 }
@@ -723,10 +732,13 @@ int		render_cube(t_cube *cube)
 {
 	project_walls(cube);
 	draw_sprites(cube);
-	draw_minimap(cube);
-	render_rays(cube->rays, cube);
-	draw_player(cube, &cube->map.player);
-	draw_sprites_minimap(cube);
+	if (cube->minimap)
+	{
+		draw_minimap(cube);
+		render_rays(cube->rays, cube);
+		draw_player(cube, &cube->map.player);
+		draw_sprites_minimap(cube);
+	}
 	return (0);
 }
 
@@ -735,6 +747,11 @@ int		update_cube(t_cube *cube)
 	move_player(&cube->map.player, &cube->map, cube);
 	cast_all_rays(cube);
 	render_cube(cube);
+	if (cube->savebmp)
+	{
+		save_bitmap(cube);
+		quit_cube(cube, EXIT_SUCCESS);
+	}
 	mlx_put_image_to_window(cube->mlx, cube->win,
 			cube->image.img, 0, 0);
 	mlx_do_sync(cube->mlx);
@@ -786,34 +803,54 @@ void	print_map(t_cube *cube)
 	}
 }
 
-/*
-**
-**	DESCRIPTION
-**
-**	RETURN VALUES
-**
-*/
+void	usage(char **argv)
+{
+	ft_putstr_fd("Usage: ", 2);
+	ft_putstr_fd(argv[0], 2);
+	ft_putstr_fd(" FILE.cub [OPTION]\n", 2);
+}
+
+int		check_arg(int argc, char **argv, t_cube *cube)
+{
+	size_t len;
+
+	if (argc == 1 || argc > 3)
+	{
+		usage(argv);
+		return (1);
+	}
+	len = ft_strlen(argv[1]);
+	if (len < 4 || ft_strcmp(&argv[1][len - 4], ".cub"))
+	{
+		usage(argv);
+		return (1);
+	}
+	if (argc == 3)
+	{
+		if (ft_strcmp(argv[2], "--save"))
+		{
+			usage(argv);
+			return (1);
+		}
+		cube->savebmp = 1;
+	}
+	return (0);
+}
 
 int		main(int argc, char **argv)
 {
 	t_cube	cube;
 
-	if (argc == 1)
-	{
-		ft_putstr_fd("Usage: ", 2);
-		ft_putstr_fd(argv[0], 2);
-		ft_putstr_fd(" map.cub\n", 2);
-		return (1);
-	}
 	ft_bzero(&cube, sizeof(cube));
+	if (check_arg(argc, argv, &cube))
+		return (EXIT_FAILURE);
 	parse_cub(argv[1], &cube);
 	initialize_cube(&cube);
 	initialize_assets(&cube);
 	initialize_image(&cube);
-	initialize_hooks(&cube);
-	update_cube(&cube);
-	save_bitmap(&cube);
-	print_map(&cube);
+	if (cube.savebmp == 0)
+		initialize_hooks(&cube);
 	mlx_loop_hook(cube.mlx, update_cube, &cube);
 	mlx_loop(cube.mlx);
+	return (EXIT_SUCCESS);
 }
