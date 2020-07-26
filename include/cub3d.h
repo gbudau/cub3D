@@ -3,10 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/24 22:10:23 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/26 16:56:58 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +33,7 @@
 # define KEY_AR_L 65361
 # define KEY_AR_R 65363
 # define WINDOW_TITLE "cub3d"
-# define MINIMAP_SCALE 0.2f
+# define MINIMAP_SCALE 0.5f
 # define WALK_SPEED 1.0f
 # define TURN_SPEED 1.0f
 # define TEXTURES 5
@@ -61,6 +62,17 @@ enum	e_textures
 	SOUTH,
 	NORTH,
 	SPRITE
+};
+
+enum	e_colors
+{
+	RAYS_COL = 0xffffff00,
+	SPRITE_COL = 0xffffa500,
+	PLAYER_COL = 0xff101010,
+	PLAYER_DIR_COL = 0xff333333,
+	EMPTY_COL = 0xffffffff,
+	SPACE_COL = 0xff000000,
+	WALL_COL = 0xff003366
 };
 
 enum	e_flags
@@ -142,14 +154,29 @@ typedef struct	s_sprite
 {
 	float	x;
 	float	y;
-	float	dx;
-	float	dy;
-	float	sprite_dir;
+	float	direction;
 	float	player_dist;
+	int		size;
+	int		y_off;
+	int		x_off;
 	int		map_x;
 	int		map_y;
-	int		texture_id;
+	int		tex_id;
 }				t_sprite;
+
+typedef struct	s_wall_strip
+{
+	int		strip_height;
+	float	proj_height;
+	float	perp_dist;
+	int		top_pix;
+	int		bot_pix;
+	int		color;
+	int		tex_off_x;
+	int		tex_off_y;
+	int		top_dist;
+	int		side;
+}				t_wall_strip;
 
 typedef	struct	s_map
 {
@@ -172,7 +199,7 @@ typedef struct	s_ray
 	float	ray_angle;
 	float	wall_hit_x;
 	float	wall_hit_y;
-	float	distance;
+	float	dist;
 	int		was_hit_vert;
 	int		was_hit_horz;
 	int		wall_hit_content;
@@ -189,7 +216,7 @@ typedef struct	s_texture
 	int		height;
 }				t_texture;
 
-typedef struct	s_cube
+typedef struct	s_cub
 {
 	t_image		image;
 	t_map		map;
@@ -208,7 +235,7 @@ typedef struct	s_cube
 	float		half_fov_angle;
 	float		angle_step;
 	float		dist_proj_plane;
-}				t_cube;
+}				t_cub;
 
 /*
 ** Utility functions
@@ -216,16 +243,78 @@ typedef struct	s_cube
 
 void			pixel_put(t_image *img, int x, int y, int color);
 int				pixel_get(t_image *img, int x, int y);
-void			draw_rectangle(t_cube *cube, t_point start,
+void			draw_rectangle(t_cub *cub, t_point start,
 				t_point end, int color);
-void			draw_line(t_cube *cube, t_point start, t_point end, int color);
-void			save_bitmap(t_cube *cube);
-void			quit_cube(t_cube *cube, int exit_code);
-void			parse_cub(char *path, t_cube *cube);
+void			draw_line(t_cub *cub, t_point start, t_point end, int color);
 void			free_int_matrix(int **matrix, size_t height);
-void			boundary_fill(int x, int y, int *open, t_cube *cube);
-void			rev_boundary_fill(t_cube *cube);
-int				ft_max(int a, int b);
+float			points_dist(float x1, float x2, float y1, float y2);
+float			normalize_angle(float angle);
+int				grid_color(int row, int col, t_cub *cub);
+int				wall_side(t_ray *ray);
+
+/*
+** Misc functions
+*/
+
+void			quit_cub(t_cub *cub, int exit_code);
+int				check_args(int argc, char **argv, t_cub *cub);
+
+/*
+** Move player functions
+*/
+
+void			move_player(t_player *player, t_cub *cub);
+
+/*
+** Draw functions
+*/
+
+void			draw_sprites(t_cub *cub);
+void			project_walls(t_cub *cub);
+void			draw_floor(int x, t_wall_strip *wall, t_cub *cub);
+void			draw_ceiling(int x, t_wall_strip *wall, t_cub *cub);
+
+/*
+** Draw minimap functions
+*/
+
+void			draw_minimap(t_cub *cub);
+void			draw_rays_minimap(t_ray *rays, t_cub *cub);
+void			draw_player_minimap(t_cub *cub, t_player *player);
+void			draw_sprites_minimap(t_cub *cub);
+
+/*
+** Raycast functions
+*/
+
+void			cast_rays(t_cub *cub);
+void			cast_ray(float ray_angle, int column, t_map *map, t_ray *rays);
+
+/*
+** Save to bitmap functions
+*/
+
+void			save_bitmap(t_cub *cub);
+
+/*
+** Parse .cub file functions
+*/
+
+void			parse_cub(char *path, t_cub *cub);
+void			boundary_fill(int x, int y, int *open, t_cub *cub);
+void			rev_boundary_fill(t_cub *cub);
+
+/*
+** Initialize functions
+*/
+
+void			initialize(t_cub *cub);
+
+/*
+** Set mouse and keyboard hooks functions
+*/
+
+void			set_hooks(t_cub *cub);
 
 /*
 ** Color functions

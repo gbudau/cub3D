@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d_image_utils.c                                :+:      :+:    :+:   */
+/*   image_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 18:06:18 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/16 22:41:51 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/25 19:31:30 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	line_increase_position(int *error, int *pos, int step, int delta)
 ** https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 */
 
-void		draw_line(t_cube *cube, t_point start, t_point end, int color)
+void		draw_line(t_cub *cub, t_point start, t_point end, int color)
 {
 	t_line_var line;
 
@@ -50,9 +50,9 @@ void		draw_line(t_cube *cube, t_point start, t_point end, int color)
 	line.error = line.dx + line.dy;
 	while (1)
 	{
-		if ((start.x >= 0 && start.x < cube->width) &&
-				(start.y >= 0 && start.y < cube->height))
-			pixel_put(&cube->image, start.x, start.y, color);
+		if ((start.x >= 0 && start.x < cub->width) &&
+				(start.y >= 0 && start.y < cub->height))
+			pixel_put(&cub->image, start.x, start.y, color);
 		if (start.x == end.x && start.y == end.y)
 			break ;
 		line.error2 = 2 * line.error;
@@ -63,17 +63,17 @@ void		draw_line(t_cube *cube, t_point start, t_point end, int color)
 	}
 }
 
-void		draw_rectangle(t_cube *cube, t_point start, t_point end, int color)
+void		draw_rectangle(t_cub *cub, t_point start, t_point end, int color)
 {
 	int tmp;
 
 	tmp = start.x;
-	while (start.y <= end.y && start.y < cube->height)
+	while (start.y <= end.y && start.y < cub->height)
 	{
 		start.x = tmp;
-		while (start.x <= end.x && start.x < cube->width)
+		while (start.x <= end.x && start.x < cub->width)
 		{
-			pixel_put(&cube->image, start.x, start.y, color);
+			pixel_put(&cub->image, start.x, start.y, color);
 			start.x++;
 		}
 		start.y++;

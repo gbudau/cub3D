@@ -6,13 +6,13 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/24 18:31:39 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/26 19:09:44 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3d
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g #-O3 -fsanitize=address -O3
+CFLAGS = -Wall -Werror -Wextra -g #-fsanitize=address  -O3
 OFLAGS = -c -o
 LFLAGS = -lmlx -lft -lXext -lX11 -lm
 RMF = rm -rf
@@ -24,8 +24,10 @@ MLX_DIR = minilibx-linux
 OBJ_DIR := obj
 INC_DIR = include
 
-_OBJ = cub3d.o cub3d_image_utils.o colors.o colors_utils.o save_bitmap.o \
-	   parse_cub.o boundary_fill.o
+_OBJ = cub3d.o image_utils.o colors.o colors_utils.o save_bitmap.o \
+	   parse_cub.o boundary_fill.o initialize.o sprites.o hooks.o \
+	   utils.o minimap.o move_player.o raycast.o quit.o check_args.o \
+	   project_walls.o proj_walls_utils.o
 OBJ := $(patsubst %, $(OBJ_DIR)/%, $(_OBJ))
 
 _DEPS = cub3d.h libft.h

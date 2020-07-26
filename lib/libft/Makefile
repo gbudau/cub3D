@@ -6,7 +6,7 @@
 #    By: gbudau <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/11 00:42:18 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/22 17:00:58 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/25 19:15:35 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ OBJ = ft_atoi.o ft_bzero.o ft_calloc.o ft_lstrev.o \
 	  ft_strtrim.o ft_substr.o ft_tolower.o ft_toupper.o \
 	  get_next_line.o ft_abs.o ft_str_count_c.o ft_strcmp.o \
 	  ft_strarrlen.o ft_free_strarr.o ft_str_count_s.o \
-	  ft_split_str.o
+	  ft_split_str.o ft_min.o ft_max.o ft_free_int_matrix.o
 AR = ar rcs
    
 

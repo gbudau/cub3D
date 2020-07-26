@@ -6,7 +6,7 @@
 /*   By: gbudau <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/10 21:34:03 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/22 16:43:07 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/25 19:15:10 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,8 @@ size_t		ft_strarrlen(char **info);
 void		**ft_free_strarr(char **info);
 size_t		ft_str_count_s(const char *s, const char *delim);
 char		**ft_split_str(const char *s, const char *delim);
+int			ft_min(int a, int b);
+int			ft_max(int a, int b);
+void		ft_free_int_matrix(int **matrix, size_t size);
 
 #endif

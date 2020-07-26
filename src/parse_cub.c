@@ -6,31 +6,31 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/19 17:53:27 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/24 22:47:10 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/26 16:53:41 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
-void	free_lst_quit(t_list *head, t_cube *cube)
+void	free_lst_quit(t_list *head, t_cub *cub)
 {
 	ft_lstclear(&head, free);
-	quit_cube(cube, EXIT_FAILURE);
+	quit_cub(cub, EXIT_FAILURE);
 }
 
-void	free_info_lst_quit(char **info, t_list *head, t_cube *cube)
+void	free_info_lst_quit(char **info, t_list *head, t_cub *cub)
 {
 	ft_free_strarr(info);
-	free_lst_quit(head, cube);
+	free_lst_quit(head, cub);
 }
 
-void	lst_add_line(char *line, t_list **head, t_cube *cube)
+void	lst_add_line(char *line, t_list **head, t_cub *cub)
 {
 	t_list	*node;
 
 	node = NULL;
 	if ((node = ft_lstnew(line)) == NULL)
-		free_lst_quit(*head, cube);
+		free_lst_quit(*head, cub);
 	ft_lstadd_front(head, node);
 }
 
@@ -48,53 +48,53 @@ int		strlen_isdigit(char *str)
 	return (i);
 }
 
-int		parse_resolution(int *flags, t_cube *cube)
+int		parse_resolution(int *flags, t_cub *cub)
 {
 	char	**info;
 	int		len_width;
 	int		len_height;
 
-	info = cube->info;
+	info = cub->info;
 	if (*flags & RESOLUTION || ft_strarrlen(info) != 3 ||
 			(len_width = strlen_isdigit(info[1])) < 1 ||
 			(len_height = strlen_isdigit(info[2])) < 1)
 		return (-1);
 	else
 	{
-		cube->width = len_width < 10 ? ft_atoi(info[1]) : INT_MAX;
-		cube->height = len_height < 10 ? ft_atoi(info[2]) : INT_MAX;
+		cub->width = len_width < 10 ? ft_atoi(info[1]) : INT_MAX;
+		cub->height = len_height < 10 ? ft_atoi(info[2]) : INT_MAX;
 	}
 	ft_free_strarr(info);
 	*flags |= RESOLUTION;
 	return (0);
 }
 
-int		save_texture(int *flags, int flag, int texture_id, t_cube *cube)
+int		save_texture(int *flags, int flag, int tex_id, t_cub *cub)
 {
-	if (*flags & flag || ft_strarrlen(cube->info) != 2)
+	if (*flags & flag || ft_strarrlen(cub->info) != 2)
 		return (-1);
-	cube->map.paths[texture_id] = cube->info[1];
-	free(cube->info[0]);
-	free(cube->info);
+	cub->map.paths[tex_id] = cub->info[1];
+	free(cub->info[0]);
+	free(cub->info);
 	*flags |= flag;
 	return (0);
 }
 
-int		parse_texture(int *flags, t_cube *cube)
+int		parse_texture(int *flags, t_cub *cub)
 {
 	char	**info;
 
-	info = cube->info;
+	info = cub->info;
 	if (!ft_strcmp(*info, "NO"))
-		return (save_texture(flags, NORTH_TEX, NORTH, cube));
+		return (save_texture(flags, NORTH_TEX, NORTH, cub));
 	else if (!ft_strcmp(*info, "SO"))
-		return (save_texture(flags, SOUTH_TEX, SOUTH, cube));
+		return (save_texture(flags, SOUTH_TEX, SOUTH, cub));
 	else if (!ft_strcmp(*info, "WE"))
-		return (save_texture(flags, WEST_TEX, WEST, cube));
+		return (save_texture(flags, WEST_TEX, WEST, cub));
 	else if (!ft_strcmp(*info, "EA"))
-		return (save_texture(flags, EAST_TEX, EAST, cube));
+		return (save_texture(flags, EAST_TEX, EAST, cub));
 	else
-		return (save_texture(flags, SPRITE_TEX, SPRITE, cube));
+		return (save_texture(flags, SPRITE_TEX, SPRITE, cub));
 }
 
 int		str_to_color(char *str)
@@ -130,13 +130,13 @@ int		create_color(char **rgb, int *color)
 	return (0);
 }
 
-int		save_color(int *flags, int flag, t_cube *cube)
+int		save_color(int *flags, int flag, t_cub *cub)
 {
 	char	**rgb;
 	int		color;
 
-	if (*flags & flag || ft_strarrlen(cube->info) != 2 ||
-			((rgb = ft_split(cube->info[1], ',')) == NULL))
+	if (*flags & flag || ft_strarrlen(cub->info) != 2 ||
+			((rgb = ft_split(cub->info[1], ',')) == NULL))
 		return (-1);
 	if (ft_strarrlen(rgb) != 3 || (create_color(rgb, &color)) < 0)
 	{
@@ -144,91 +144,84 @@ int		save_color(int *flags, int flag, t_cube *cube)
 		return (-1);
 	}
 	if (flag & CEIL_COL)
-		cube->map.ceil_color = color;
+		cub->map.ceil_color = color;
 	else
-		cube->map.floor_color = color;
+		cub->map.floor_color = color;
 	ft_free_strarr(rgb);
 	*flags |= flag;
 	return (0);
 }
 
-int		parse_color(int *flags, t_cube *cube)
+int		parse_color(int *flags, t_cub *cub)
 {
 	char	**info;
 
-	info = cube->info;
+	info = cub->info;
 	if (!ft_strcmp(*info, "C"))
 	{
-		if (save_color(flags, CEIL_COL, cube) < 0)
+		if (save_color(flags, CEIL_COL, cub) < 0)
 			return (-1);
 	}
 	else
 	{
-		if (save_color(flags, FLOOR_COL, cube) < 0)
+		if (save_color(flags, FLOOR_COL, cub) < 0)
 			return (-1);
 	}
 	ft_free_strarr(info);
 	return (0);
 }
 
-void	parse_identifier(int *flags, t_list *head, t_cube *cube)
+void	parse_identifier(int *flags, t_list *head, t_cub *cub)
 {
 	char	**info;
 
-	info = cube->info;
+	info = cub->info;
 	if (!ft_strcmp(*info, "R"))
 	{
-		if (parse_resolution(flags, cube) == -1)
-			free_info_lst_quit(info, head, cube);
+		if (parse_resolution(flags, cub) == -1)
+			free_info_lst_quit(info, head, cub);
 	}
 	else if (!ft_strcmp(*info, "NO") || !ft_strcmp(*info, "SO") ||
 			!ft_strcmp(*info, "WE") || !ft_strcmp(*info, "EA") ||
 			!ft_strcmp(*info, "S"))
 	{
-		if (parse_texture(flags, cube) == -1)
-			free_info_lst_quit(info, head, cube);
+		if (parse_texture(flags, cub) == -1)
+			free_info_lst_quit(info, head, cub);
 	}
 	else if (!ft_strcmp(*info, "F") || !ft_strcmp(*info, "C"))
 	{
-		if (parse_color(flags, cube) == -1)
-			free_info_lst_quit(info, head, cube);
+		if (parse_color(flags, cub) == -1)
+			free_info_lst_quit(info, head, cub);
 	}
 	else
-		free_info_lst_quit(info, head, cube);
+		free_info_lst_quit(info, head, cub);
 }
 
-void	parse_line(char *line, int *flags, t_list *head, t_cube *cube)
+void	parse_line(char *line, int *flags, t_list *head, t_cub *cub)
 {
-	if ((cube->info = ft_split(line, ' ')) == NULL)
-		free_lst_quit(head, cube);
-	if (*(cube->info))
+	if ((cub->info = ft_split(line, ' ')) == NULL)
+		free_lst_quit(head, cub);
+	if (*(cub->info))
 	{
-		parse_identifier(flags, head, cube);
+		parse_identifier(flags, head, cub);
 	}
 	else
-		free(cube->info);
+		free(cub->info);
 }
 
-void	set_rotation_angle(int position, t_cube *cube)
+void	set_rotation_angle(int position, t_cub *cub)
 {
 	if (position == 'N')
-		cube->map.player.rotation_angle = PI / 2 * 3;
+		cub->map.player.rotation_angle = PI / 2 * 3;
 	else if (position == 'S')
-		cube->map.player.rotation_angle = PI / 2;
+		cub->map.player.rotation_angle = PI / 2;
 	else if (position == 'W')
-		cube->map.player.rotation_angle = PI;
+		cub->map.player.rotation_angle = PI;
 	else if (position == 'E')
-		cube->map.player.rotation_angle = 0;
+		cub->map.player.rotation_angle = 0;
 }
 
-int		ft_max(int a, int b)
-{
-	if (a > b)
-		return (a);
-	return (b);
-}
-
-int		check_row(char *str, t_cube *cube)
+int		check_row(char *str, t_cub *cub)
 {
 	int		i;
 
@@ -238,62 +231,62 @@ int		check_row(char *str, t_cube *cube)
 		if (ft_strchr(VALID_MAP_CHARS, str[i]) == NULL)
 			return (-1);
 		if (str[i] == '2')
-			cube->map.sprites++;
+			cub->map.sprites++;
 		if (ft_strchr(SPAWN_ORIENTATION, str[i]))
 		{
-			if (cube->map.player_found != 0)
+			if (cub->map.player_found != 0)
 				return (-1);
-			cube->map.player_found++;
-			cube->map.player.map_x = i;
-			cube->map.player.map_y = cube->map.height;
-			set_rotation_angle(str[i], cube);
+			cub->map.player_found++;
+			cub->map.player.map_x = i;
+			cub->map.player.map_y = cub->map.height;
+			set_rotation_angle(str[i], cub);
 			str[i] = '0';
 		}
 		i++;
 	}
-	cube->map.height++;
-	cube->map.width = ft_max(i, cube->map.width);
+	cub->map.height++;
+	cub->map.width = ft_max(i, cub->map.width);
 	return (i < 3 ? -1 : 0);
 }
 
-int		check_map(t_list *trav, t_cube *cube)
+int		check_map(t_list *trav, t_cub *cub)
 {
 	while (trav)
 	{
-		if (check_row(trav->content, cube) == -1)
+		if (check_row(trav->content, cub) == -1)
 			return (-1);
 		trav = trav->next;
 	}
 	return (0);
 }
 
-void	set_sprite(int x, int y, int i, t_cube *cube)
+void	set_sprite(int x, int y, int i, t_cub *cub)
 {
-	cube->sprites[i].map_x = x;
-	cube->sprites[i].map_y = y;
-	cube->sprites[i].texture_id = SPRITE;
-	cube->row[x] = '0';
+	cub->sprites[i].map_x = x;
+	cub->sprites[i].map_y = y;
+	cub->sprites[i].tex_id = SPRITE;
+	cub->row[x] = '0';
 }
 
-int		save_sprite_positions(t_list *trav, t_cube *cube)
+int		save_sprite_positions(t_list *trav, t_cub *cub)
 {
 	int		y;
 	int		x;
 	int		i;
 
-	if ((cube->sprites = malloc(sizeof(t_sprite) * cube->map.sprites)) == NULL)
+	if ((cub->sprites = malloc(sizeof(t_sprite) * cub->map.sprites)) == NULL)
 		return (-1);
 	y = 0;
 	i = 0;
 	while (trav)
 	{
-		cube->row = trav->content;
+		cub->row = trav->content;
 		x = 0;
-		while (cube->row[x])
+		while (cub->row[x])
 		{
-			if (cube->row[x] == '2')
+			if (cub->row[x] == '2')
 			{
-				set_sprite(x, y, i, cube);
+				set_sprite(x, y, i, cub);
 				i++;
 			}
 			x++;
@@ -304,15 +297,15 @@ int		save_sprite_positions(t_list *trav, t_cube *cube)
 	return (0);
 }
 
-int		save_row(char *row, int y, t_cube *cube)
+int		save_row(char *row, int y, t_cub *cub)
 {
 	int	x;
 	int	**grid;
 	int	*grid_row;
 
-	if ((grid_row = malloc(sizeof(int) * cube->map.width)) == NULL)
+	if ((grid_row = malloc(sizeof(int) * cub->map.width)) == NULL)
 		return (-1);
-	grid = cube->map.grid;
+	grid = cub->map.grid;
 	grid[y] = grid_row;
 	x = 0;
 	while (row[x])
@@ -323,7 +316,7 @@ int		save_row(char *row, int y, t_cube *cube)
 			grid[y][x] = row[x] - '0';
 		x++;
 	}
-	while (x < cube->map.width)
+	while (x < cub->map.width)
 	{
 		grid[y][x] = 2;
 		x++;
@@ -331,36 +324,21 @@ int		save_row(char *row, int y, t_cube *cube)
 	return (0);
 }
 
-void	free_int_matrix(int **matrix, size_t y)
-{
-	size_t	i;
-
-	if (matrix)
-	{
-		i = 0;
-		while (i < y)
-		{
-			free(matrix[i]);
-			i++;
-		}
-	}
-	free(matrix);
-}
-
-int		save_grid(t_list *trav, t_cube *cube)
+int		save_grid(t_list *trav, t_cub *cub)
 {
 	int	y;
 
-	cube->map.grid = malloc(sizeof(int *) * cube->map.height);
-	if (cube->map.grid == NULL)
+	cub->map.grid = malloc(sizeof(int *) * cub->map.height);
+	if (cub->map.grid == NULL)
 		return (-1);
 	y = 0;
 	while (trav)
 	{
-		cube->row = trav->content;
-		if (save_row(cube->row, y, cube) == -1)
+		cub->row = trav->content;
+		if (save_row(cub->row, y, cub) == -1)
 		{
-			free_int_matrix(cube->map.grid, y);
+			ft_free_int_matrix(cub->map.grid, y);
+			cub->map.grid = NULL;
 			return (-1);
 		}
 		y++;
@@ -369,12 +347,12 @@ int		save_grid(t_list *trav, t_cube *cube)
 	return (0);
 }
 
-int		save_map(t_list *trav, t_cube *cube)
+int		save_map(t_list *trav, t_cub *cub)
 {
-	if (cube->map.sprites != 0)
-		if (save_sprite_positions(trav, cube) == -1)
+	if (cub->map.sprites != 0)
+		if (save_sprite_positions(trav, cub) == -1)
 			return (-1);
-	if (save_grid(trav, cube) == -1)
+	if (save_grid(trav, cub) == -1)
 		return (-1);
 	return (0);
 }
@@ -386,27 +364,27 @@ t_list	*skip_empty_lines(t_list *trav)
 	return (trav);
 }
 
-void	parse_map(t_list *trav, t_list *head, t_cube *cube)
+void	parse_map(t_list *trav, t_list *head, t_cub *cub)
 {
 	int	open;
 
 	trav = skip_empty_lines(trav);
-	if (check_map(trav, cube) == -1)
-		free_lst_quit(head, cube);
-	if (cube->map.player_found != 1 ||
-			cube->width <= 0 ||
-			cube->height <= 0)
-		free_lst_quit(head, cube);
-	if (save_map(trav, cube) == -1)
-		free_lst_quit(head, cube);
+	if (check_map(trav, cub) == -1)
+		free_lst_quit(head, cub);
+	if (cub->map.player_found != 1 ||
+			cub->width <= 0 ||
+			cub->height <= 0)
+		free_lst_quit(head, cub);
+	if (save_map(trav, cub) == -1)
+		free_lst_quit(head, cub);
 	open = FALSE;
-	boundary_fill(cube->map.player.map_x, cube->map.player.map_y, &open, cube);
+	boundary_fill(cub->map.player.map_x, cub->map.player.map_y, &open, cub);
 	if (open == TRUE)
-		free_lst_quit(head, cube);
-	rev_boundary_fill(cube);
+		free_lst_quit(head, cub);
+	rev_boundary_fill(cub);
 }
 
-void	parse_list(t_list *head, t_cube *cube)
+void	parse_list(t_list *head, t_cub *cub)
 {
 	t_list	*trav;
 	int		flags;
@@ -415,22 +393,20 @@ void	parse_list(t_list *head, t_cube *cube)
 	trav = head;
 	while (trav)
 	{
-		if (flags < IDENTIFIERS)
+		if (flags != IDENTIFIERS)
 		{
-			parse_line(trav->content, &flags, head, cube);
+			parse_line(trav->content, &flags, head, cub);
 			trav = trav->next;
 		}
 		else
-		{
-			parse_map(trav, head, cube);
 			break ;
-		}
 	}
 	if (flags != IDENTIFIERS)
-		free_lst_quit(head, cube);
+		free_lst_quit(head, cub);
+	parse_map(trav, head, cub);
 }
 
-void	parse_cub(char *path, t_cube *cube)
+void	parse_cub(char *path, t_cub *cub)
 {
 	int		fd;
 	int		error;
@@ -439,15 +415,17 @@ void	parse_cub(char *path, t_cube *cube)
 
 	head = NULL;
 	if ((fd = open(path, O_RDONLY)) < 0)
-		quit_cube(cube, EXIT_FAILURE);
+		quit_cub(cub, EXIT_FAILURE);
 	line = NULL;
 	while ((error = get_next_line(fd, &line)) > 0)
-		lst_add_line(line, &head, cube);
+		lst_add_line(line, &head, cub);
 	if (error != -1 && *line)
-		lst_add_line(line, &head, cube);
+		lst_add_line(line, &head, cub);
 	else
 		free(line);
 	ft_lstrev(&head);
-	parse_list(head, cube);
+	if (close(fd))
+		free_lst_quit(head, cub);
+	parse_list(head, cub);
 	ft_lstclear(&head, free);
 }
