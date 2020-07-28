@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 18:23:05 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 19:14:17 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/27 21:05:15 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ static void	calculate_wall(int i, t_wall_strip *w, t_cub *cub)
 	w->bot_pix = w->bot_pix > cub->height ? cub->height : w->bot_pix;
 }
 
-static void	calculate_tex_off_x(int	i, t_wall_strip *w, t_cub *cub)
+static void	calculate_tex_off_x(int i, t_wall_strip *w, t_cub *cub)
 {
 	if (cub->rays[i].was_hit_vert)
 	{
 		w->tex_off_x = (int)cub->rays[i].wall_hit_y %
-													cub->texture[w->side].height;
+												cub->texture[w->side].height;
 	}
 	else
 	{

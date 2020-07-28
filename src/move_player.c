@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 16:34:33 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 16:34:58 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/27 21:04:11 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void		move_player(t_player *player, t_cub *cub)
 	player->rotation_angle = normalize_angle(player->rotation_angle);
 	strafe_step = player->strafe_direction * player->walk_speed;
 	strafe_angle = 0.5 * PI * (player->strafe_direction != 0);
-	move_step = player->walk_direction * player->walk_speed; 
+	move_step = player->walk_direction * player->walk_speed;
 	new_x = player->x + cos(player->rotation_angle) * move_step +
 		cos(player->rotation_angle + strafe_angle) * strafe_step;
 	new_y = player->y + sin(player->rotation_angle) * move_step +

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 19:08:35 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 19:08:48 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/27 21:06:57 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int		wall_side(t_ray *ray)
 	return (side);
 }
 
-void	draw_ceiling(int x, t_wall *wall, t_cub *cub)
+void	draw_ceiling(int x, t_wall_strip *wall, t_cub *cub)
 {
 	int	y;
 
@@ -45,14 +45,14 @@ void	draw_ceiling(int x, t_wall *wall, t_cub *cub)
 	}
 }
 
-void	draw_floor(int x, t_wall *wall, t_cub *cub)
+void	draw_floor(int x, t_wall_strip *wall, t_cub *cub)
 {
 	int	y;
 
 	y = wall->bot_pix;
 	while (y < cub->height)
 	{
-		pixel_put(&cub->image, x ,y, cub->map.floor_color);
+		pixel_put(&cub->image, x, y, cub->map.floor_color);
 		y++;
 	}
 }

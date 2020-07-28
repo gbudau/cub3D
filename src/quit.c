@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 16:56:08 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 16:56:36 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/28 21:41:48 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	quit_cub(t_cub *cub, int exit_code)
 		mlx_destroy_image(cub->mlx, cub->image.img);
 	if (cub->mlx && cub->win)
 		mlx_destroy_window(cub->mlx, cub->win);
+	free(cub->mlx);
 	ft_bzero(cub, sizeof(t_cub));
 	exit(exit_code);
 }

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 21:16:09 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 15:34:16 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/27 15:43:36 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,17 @@ int		grid_color(int row, int col, t_cub *cub)
 	else if (cub->map.grid[row][col] == SPACE)
 		return (SPACE_COL);
 	return (WALL_COL);
+}
+
+int		is_wall(int x, int y, t_map *map)
+{
+	int	row;
+	int	col;
+
+	if (x < 0 || x >= TILE_SIZE * map->width ||
+			y < 0 || y >= TILE_SIZE * map->height)
+		return (TRUE);
+	row = y / TILE_SIZE;
+	col = x / TILE_SIZE;
+	return (map->grid[row][col] == 1);
 }

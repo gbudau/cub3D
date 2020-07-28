@@ -3,11 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 16:56:58 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/28 22:02:57 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +31,14 @@
 # define KEY_ESC 65307
 # define KEY_AR_L 65361
 # define KEY_AR_R 65363
-# define WINDOW_TITLE "cub3d"
-# define MINIMAP_SCALE 0.5f
+# define TITLE "cub3d"
+# define MINIMAP_SCALE 0.2f
 # define WALK_SPEED 1.0f
 # define TURN_SPEED 1.0f
 # define TEXTURES 5
 # define VALID_MAP_CHARS "012NSWE "
 # define SPAWN_ORIENTATION "NSWE"
-# define TILE_SIZE 32
+# define TILE_SIZE 64
 
 enum	e_bool
 {
@@ -202,12 +201,27 @@ typedef struct	s_ray
 	float	dist;
 	int		was_hit_vert;
 	int		was_hit_horz;
-	int		wall_hit_content;
 	int		is_ray_facing_up;
 	int		is_ray_facing_down;
 	int		is_ray_facing_right;
 	int		is_ray_facing_left;
 }				t_ray;
+
+typedef struct	s_raycast
+{
+	int		wall_hit;
+	float	wall_hit_x;
+	float	wall_hit_y;
+	float	next_touch_x;
+	float	next_touch_y;
+	float	hit_dist;
+	float	xintercept;
+	float	yintercept;
+	float	xstep;
+	float	ystep;
+	float	y_to_check;
+	float	x_to_check;
+}				t_raycast;
 
 typedef struct	s_texture
 {
@@ -238,7 +252,7 @@ typedef struct	s_cub
 }				t_cub;
 
 /*
-** Utility functions
+** Utility
 */
 
 void			pixel_put(t_image *img, int x, int y, int color);
@@ -246,27 +260,30 @@ int				pixel_get(t_image *img, int x, int y);
 void			draw_rectangle(t_cub *cub, t_point start,
 				t_point end, int color);
 void			draw_line(t_cub *cub, t_point start, t_point end, int color);
-void			free_int_matrix(int **matrix, size_t height);
 float			points_dist(float x1, float x2, float y1, float y2);
 float			normalize_angle(float angle);
 int				grid_color(int row, int col, t_cub *cub);
 int				wall_side(t_ray *ray);
+int				is_wall(int x, int y, t_map *map);
+int				strlen_isdigit(char *str);
+void			free_info_lst_quit(char **info, t_list *head, t_cub *cub);
+void			free_lst_quit(t_list *head, t_cub *cub);
 
 /*
-** Misc functions
+** Others
 */
 
 void			quit_cub(t_cub *cub, int exit_code);
 int				check_args(int argc, char **argv, t_cub *cub);
 
 /*
-** Move player functions
+** Move player
 */
 
 void			move_player(t_player *player, t_cub *cub);
 
 /*
-** Draw functions
+** Draw
 */
 
 void			draw_sprites(t_cub *cub);
@@ -275,7 +292,7 @@ void			draw_floor(int x, t_wall_strip *wall, t_cub *cub);
 void			draw_ceiling(int x, t_wall_strip *wall, t_cub *cub);
 
 /*
-** Draw minimap functions
+** Draw minimap
 */
 
 void			draw_minimap(t_cub *cub);
@@ -284,49 +301,42 @@ void			draw_player_minimap(t_cub *cub, t_player *player);
 void			draw_sprites_minimap(t_cub *cub);
 
 /*
-** Raycast functions
+** Raycast
 */
 
 void			cast_rays(t_cub *cub);
-void			cast_ray(float ray_angle, int column, t_map *map, t_ray *rays);
+void			cast_ray_horz(t_raycast *horz, t_map *map, t_ray *ray);
+void			cast_ray_vert(t_raycast *vert, t_map *map, t_ray *ray);
 
 /*
-** Save to bitmap functions
+** Save to bitmap
 */
 
 void			save_bitmap(t_cub *cub);
 
 /*
-** Parse .cub file functions
+** Parse .cub file
 */
 
 void			parse_cub(char *path, t_cub *cub);
+void			parse_grid(t_list *trav, t_list *head, t_cub *cub);
 void			boundary_fill(int x, int y, int *open, t_cub *cub);
 void			rev_boundary_fill(t_cub *cub);
+int				save_map(t_list *trav, t_cub *cub);
+int				parse_resolution(int *flags, t_cub *cub);
+int				parse_color(int *flags, t_cub *cub);
+int				parse_texture(int *flags, t_cub *cub);
 
 /*
-** Initialize functions
+** Initialize
 */
 
 void			initialize(t_cub *cub);
 
 /*
-** Set mouse and keyboard hooks functions
+** Set mouse and keyboard hooks
 */
 
 void			set_hooks(t_cub *cub);
-
-/*
-** Color functions
-*/
-
-int				create_trgb(int t, int r, int g, int b);
-int				get_t(int trgb);
-int				get_r(int trgb);
-int				get_g(int trgb);
-int				get_b(int trgb);
-int				add_shade(double distance, int trgb);
-int				add_tint(double distance, int trgb);
-int				get_oposite(int trgb);
 
 #endif

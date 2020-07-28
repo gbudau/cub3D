@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 19:06:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 18:17:06 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/28 21:42:30 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void		load_texture(t_cub *cub, t_texture *texture, char *path)
 			&texture->width, &texture->height);
 	if (!texture->image.img)
 		quit_cub(cub, EXIT_FAILURE);
-	texture->image.addr =  mlx_get_data_addr(
+	texture->image.addr = mlx_get_data_addr(
 			texture->image.img,
 			&texture->image.bits_per_pixel,
 			&texture->image.size_line,
@@ -49,14 +49,16 @@ static void		initialize_image(t_cub *cub)
 {
 	cub->image.img = mlx_new_image(cub->mlx, cub->width,
 			cub->height);
+	if (!cub->image.img)
+		quit_cub(cub, EXIT_FAILURE);
 	cub->image.addr = mlx_get_data_addr(
 			cub->image.img,
 			&cub->image.bits_per_pixel,
-			&cub->image.size_line, 
+			&cub->image.size_line,
 			&cub->image.endian);
 	load_texture(cub, &cub->texture[EAST], cub->map.paths[EAST]);
 	load_texture(cub, &cub->texture[WEST], cub->map.paths[WEST]);
-	load_texture(cub, &cub->texture[SOUTH], cub->map.paths[SOUTH] );
+	load_texture(cub, &cub->texture[SOUTH], cub->map.paths[SOUTH]);
 	load_texture(cub, &cub->texture[NORTH], cub->map.paths[NORTH]);
 	load_texture(cub, &cub->texture[SPRITE], cub->map.paths[SPRITE]);
 }
@@ -67,17 +69,22 @@ static void		initialize_cub(t_cub *cub)
 	int	height;
 
 	cub->mlx = mlx_init();
+	if (!cub->mlx)
+		quit_cub(cub, EXIT_FAILURE);
 	mlx_get_screen_size(cub->mlx, &width, &height);
 	cub->width = ft_min(cub->width, width);
 	cub->height = ft_min(cub->height, height);
 	if (cub->savebmp == 0)
-		cub->win = mlx_new_window(cub->mlx, cub->width,
-				cub->height, WINDOW_TITLE);
+	{
+		cub->win = mlx_new_window(cub->mlx, cub->width, cub->height, TITLE);
+		if (!cub->win)
+			quit_cub(cub, EXIT_FAILURE);
+	}
 	cub->rays = malloc(sizeof(t_ray) * cub->width);
 	if (cub->rays == NULL)
 		quit_cub(cub, EXIT_FAILURE);
 	cub->fov_angle = FOV * (PI / 180);
-	cub->half_fov_angle = (FOV / 2)  * (PI / 180);
+	cub->half_fov_angle = (FOV / 2) * (PI / 180);
 	cub->angle_step = cub->fov_angle / cub->width;
 	cub->dist_proj_plane = (cub->width / 2) / tan(cub->half_fov_angle);
 }

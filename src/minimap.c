@@ -6,15 +6,15 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 22:08:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/26 18:20:28 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/27 21:00:43 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
-void	draw_rays_minimap(t_ray *rays, t_cub *cub)
+void		draw_rays_minimap(t_ray *rays, t_cub *cub)
 {
-	int			i;
+	int		i;
 	t_point	start;
 	t_point	end;
 
@@ -30,7 +30,7 @@ void	draw_rays_minimap(t_ray *rays, t_cub *cub)
 	}
 }
 
-void	draw_sprites_minimap(t_cub *cub)
+void		draw_sprites_minimap(t_cub *cub)
 {
 	t_point start;
 	t_point end;
@@ -48,7 +48,7 @@ void	draw_sprites_minimap(t_cub *cub)
 	}
 }
 
-void	draw_player_minimap(t_cub *cub, t_player *player)
+void		draw_player_minimap(t_cub *cub, t_player *player)
 {
 	t_point	start;
 	t_point	end;
@@ -57,7 +57,7 @@ void	draw_player_minimap(t_cub *cub, t_player *player)
 	start.y = (player->y - 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
 	end.x = (player->x + 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
 	end.y = (player->y + 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
-	draw_rectangle(cub, start, end, PLAYER_COL); 
+	draw_rectangle(cub, start, end, PLAYER_COL);
 	start.x = (player->x) * MINIMAP_SCALE;
 	start.y = (player->y) * MINIMAP_SCALE;
 	end.x = start.x + cos(player->rotation_angle) * 20 * MINIMAP_SCALE;
@@ -65,13 +65,24 @@ void	draw_player_minimap(t_cub *cub, t_player *player)
 	draw_line(cub, start, end, PLAYER_DIR_COL);
 }
 
-void	draw_minimap(t_cub *cub)
+static void	draw_tile(t_point *start, t_point *end, int color, t_cub *cub)
 {
-	t_point start;
-	t_point end;
-	int	row;
-	int	col;
-	t_point scaled;
+	t_point	scaled;
+
+	scaled.x = start->x * MINIMAP_SCALE;
+	scaled.y = start->y * MINIMAP_SCALE;
+	end->x = scaled.x + TILE_SIZE * MINIMAP_SCALE;
+	end->y = scaled.y + TILE_SIZE * MINIMAP_SCALE;
+	draw_rectangle(cub, scaled, *end, color);
+}
+
+void		draw_minimap(t_cub *cub)
+{
+	t_point	start;
+	t_point	end;
+	int		row;
+	int		col;
+	int		color;
 
 	start.y = 0;
 	start.x = 0;
@@ -84,11 +95,8 @@ void	draw_minimap(t_cub *cub)
 			col = start.x / TILE_SIZE;
 			if (row < cub->map.height && col < cub->map.width)
 			{
-				scaled.x = start.x * MINIMAP_SCALE;
-				scaled.y = start.y * MINIMAP_SCALE;
-				end.x = scaled.x + TILE_SIZE * MINIMAP_SCALE;
-				end.y = scaled.y + TILE_SIZE * MINIMAP_SCALE;
-				draw_rectangle(cub, scaled, end, grid_color(row, col, cub));
+				color = grid_color(row, col, cub);
+				draw_tile(&start, &end, color, cub);
 			}
 			start.x += TILE_SIZE;
 		}
