@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 21:04:23 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/28 21:55:20 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 21:48:53 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,16 @@ static void	calculate_sprites(t_cub *cub)
 		dy = sprite->y - player->y;
 		dx = sprite->x - player->x;
 		sprite->direction = atan2(dy, dx);
-		if (sprite->direction - player->rotation_angle > PI)
+		while (sprite->direction - player->rotation_angle > PI)
 			sprite->direction -= TWO_PI;
-		if (sprite->direction - player->rotation_angle < -PI)
+		while (sprite->direction - player->rotation_angle < -PI)
 			sprite->direction += TWO_PI;
 		sprite->player_dist = points_dist(player->x,
 				sprite->x, player->y, sprite->y);
 		sprite->size = cub->width / sprite->player_dist * TILE_SIZE;
 		sprite->y_off = (cub->height / 2) - (sprite->size / 2);
 		sprite->x_off = (sprite->direction - player->rotation_angle) *
-				cub->width + (cub->width / 2) - (sprite->size / 2);
+			cub->width / cub->fov_angle + (cub->width / 2) - (sprite->size / 2);
 	}
 }
 

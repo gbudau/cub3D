@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 22:08:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/27 21:00:43 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 21:58:12 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ void		draw_sprites_minimap(t_cub *cub)
 	i = 0;
 	while (i < cub->map.sprites)
 	{
-		start.x = (cub->sprites[i].x - 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
-		start.y = (cub->sprites[i].y - 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
-		end.x = (cub->sprites[i].x + 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
-		end.y = (cub->sprites[i].y + 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
+		start.x = ((cub->sprites[i].x - 10) * MINIMAP_SCALE);
+		start.y = ((cub->sprites[i].y - 10) * MINIMAP_SCALE);
+		end.x = ((cub->sprites[i].x + 10) * MINIMAP_SCALE);
+		end.y = ((cub->sprites[i].y + 10) * MINIMAP_SCALE);
 		draw_rectangle(cub, start, end, SPRITE_COL);
 		i++;
 	}
@@ -53,15 +53,15 @@ void		draw_player_minimap(t_cub *cub, t_player *player)
 	t_point	start;
 	t_point	end;
 
-	start.x = (player->x - 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
-	start.y = (player->y - 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
-	end.x = (player->x + 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
-	end.y = (player->y + 5 * MINIMAP_SCALE) * MINIMAP_SCALE;
+	start.x = ((player->x - 10) * MINIMAP_SCALE);
+	start.y = ((player->y - 10) * MINIMAP_SCALE);
+	end.x = ((player->x + 10) * MINIMAP_SCALE);
+	end.y = ((player->y + 10) * MINIMAP_SCALE);
 	draw_rectangle(cub, start, end, PLAYER_COL);
 	start.x = (player->x) * MINIMAP_SCALE;
 	start.y = (player->y) * MINIMAP_SCALE;
-	end.x = start.x + cos(player->rotation_angle) * 20 * MINIMAP_SCALE;
-	end.y = start.y + sin(player->rotation_angle) * 20 * MINIMAP_SCALE;
+	end.x = start.x + cos(player->rotation_angle) * 40 * MINIMAP_SCALE;
+	end.y = start.y + sin(player->rotation_angle) * 40 * MINIMAP_SCALE;
 	draw_line(cub, start, end, PLAYER_DIR_COL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 18:08:17 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 22:21:28 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@
 # define KEY_ESC 65307
 # define KEY_AR_L 65361
 # define KEY_AR_R 65363
-# define TITLE "cub3d"
+# define TITLE "cub3D"
 # define MINIMAP_SCALE 0.2f
-# define WALK_SPEED 1.0f
-# define TURN_SPEED 1.0f
+# define WALK_SPEED 3.0f
+# define TURN_SPEED 2.0f
 # define TEXTURES 5
 # define VALID_MAP_CHARS "012NSWE "
 # define SPAWN_ORIENTATION "NSWE"

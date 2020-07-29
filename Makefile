@@ -6,13 +6,13 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/29 21:04:23 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/29 22:19:36 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = cub3d
+NAME = cub3D
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g #-fsanitize=address 
+CFLAGS = -Wall -Werror -Wextra -O3
 OFLAGS = -c -o
 LFLAGS = -lmlx -lft -lXext -lX11 -lm
 RMF = rm -rf

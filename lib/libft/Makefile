@@ -6,13 +6,13 @@
 #    By: gbudau <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/11 00:42:18 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/25 19:15:35 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/29 22:20:08 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 COMPILE.c = $(CC) $(CFLAGS) -c
 OUTPUT_OPTION = -o $@
 OBJ = ft_atoi.o ft_bzero.o ft_calloc.o ft_lstrev.o \
