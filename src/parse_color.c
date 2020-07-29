@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 18:21:48 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/28 18:37:04 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 20:54:46 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,6 @@ static int	str_to_color(char *str)
 	return (color);
 }
 
-static int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | r << 16 | g << 8 | b);
-}
-
 static int	create_color(char **rgb, int *color)
 {
 	int		red;
@@ -41,13 +36,41 @@ static int	create_color(char **rgb, int *color)
 	red = str_to_color(rgb[0]);
 	if (red < 0)
 		return (-1);
-	blue = str_to_color(rgb[1]);
-	if (blue < 0)
-		return (-1);
-	green = str_to_color(rgb[2]);
+	green = str_to_color(rgb[1]);
 	if (green < 0)
 		return (-1);
-	*color = create_trgb(255, red, blue, green);
+	blue = str_to_color(rgb[2]);
+	if (blue < 0)
+		return (-1);
+	*color = (255 << 24) | (red << 16) | (green << 8) | blue;
+	return (0);
+}
+
+static int	check_color_format(char *colors, int delim)
+{
+	int	i;
+	int	n_colors;
+	int	n_delim;
+
+	i = 0;
+	n_colors = 0;
+	n_delim = 0;
+	while (colors[i])
+	{
+		if (!ft_isdigit(colors[i]))
+			return (-1);
+		while (ft_isdigit(colors[i]))
+			i++;
+		n_colors++;
+		if (colors[i] && colors[i] != delim)
+			return (-1);
+		if (colors[i] && colors[i] == delim)
+			n_delim++;
+		if (colors[i])
+			i++;
+	}
+	if (n_delim != 2 || n_colors != 3)
+		return (-1);
 	return (0);
 }
 
@@ -57,6 +80,7 @@ static int	save_color(int *flags, int flag, t_cub *cub)
 	int		color;
 
 	if (*flags & flag || ft_strarrlen(cub->info) != 2 ||
+			check_color_format(cub->info[1], ',') == -1 ||
 			((rgb = ft_split(cub->info[1], ',')) == NULL))
 		return (-1);
 	if (ft_strarrlen(rgb) != 3 || (create_color(rgb, &color)) < 0)

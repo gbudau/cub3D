@@ -6,13 +6,13 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 16:56:08 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/28 21:41:48 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 18:20:47 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
-void	quit_cub(t_cub *cub, int exit_code)
+void	quit_cub(t_cub *cub, int exit_code, char *error_message)
 {
 	int	i;
 
@@ -33,5 +33,7 @@ void	quit_cub(t_cub *cub, int exit_code)
 		mlx_destroy_window(cub->mlx, cub->win);
 	free(cub->mlx);
 	ft_bzero(cub, sizeof(t_cub));
+	if (exit_code == EXIT_FAILURE)
+		ft_putendl_fd(error_message, 2);
 	exit(exit_code);
 }

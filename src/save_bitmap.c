@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/18 20:32:37 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/25 19:31:51 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 18:00:45 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ static void	write_bitmap_to_image(t_bitmap_file_header *bfh,
 
 	bf_type = 0x4d42;
 	if ((write(fd, &bf_type, sizeof(bf_type))) < 0)
-		quit_cub(cub, EXIT_FAILURE);
+		quit_cub(cub, EXIT_FAILURE, ERR_WR);
 	if ((write(fd, bfh, sizeof(*bfh))) < 0)
-		quit_cub(cub, EXIT_FAILURE);
+		quit_cub(cub, EXIT_FAILURE, ERR_WR);
 	if ((write(fd, bih, sizeof(*bih))) < 0)
-		quit_cub(cub, EXIT_FAILURE);
+		quit_cub(cub, EXIT_FAILURE, ERR_WR);
 	y = bih->bi_height - 1;
 	while (y >= 0)
 	{
@@ -60,7 +60,7 @@ static void	write_bitmap_to_image(t_bitmap_file_header *bfh,
 		{
 			pixel = pixel_get(&cub->image, x, y);
 			if ((write(fd, &pixel, sizeof(pixel))) < 0)
-				quit_cub(cub, EXIT_FAILURE);
+				quit_cub(cub, EXIT_FAILURE, ERR_WR);
 			x++;
 		}
 		y--;
@@ -78,7 +78,7 @@ void		save_bitmap(t_cub *cub)
 	fd = open("screenshot.bmp", O_WRONLY | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd < 0)
-		quit_cub(cub, EXIT_FAILURE);
+		quit_cub(cub, EXIT_FAILURE, "Open error.");
 	write_bitmap_to_image(&bfh, &bih, fd, cub);
 	close(fd);
 }

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 21:12:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/27 19:03:01 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 17:37:51 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	key_press(int keycode, t_cub *cub)
 {
 	if (keycode == KEY_ESC)
-		quit_cub(cub, EXIT_SUCCESS);
+		quit_cub(cub, EXIT_SUCCESS, "");
 	if (keycode == KEY_W)
 		cub->map.player.walk_direction = 1;
 	if (keycode == KEY_S)

@@ -1,0 +1,14 @@
+                  R                     800                       600
+
+               NO                                  ./pics/bluestone.xpm
+             SO ./pics/colorstone.xpm
+        WE ./pics/redbrick.xpm
+EA ./pics/wood.xpm
+
+S ./pics/barrel.xpm
+C 255,30,0,
+F 0,125,123
+
+ 1 1
+1 1N1
+ 1 1

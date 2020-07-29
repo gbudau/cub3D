@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/28 21:10:30 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/29 21:04:23 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
 	$(CC) $(CFLAGS) $(OFLAGS) $@ $<
 
 $(OBJ): | $(OBJ_DIR)
-
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 17:50:51 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/28 18:28:19 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 20:30:30 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	check_row(char *str, t_cub *cub)
 	}
 	cub->map.height++;
 	cub->map.width = ft_max(i, cub->map.width);
-	return (i < 3 ? -1 : 0);
+	return (i == 0 ? -1 : 0);
 }
 
 void		parse_grid(t_list *trav, t_list *head, t_cub *cub)
@@ -63,18 +63,18 @@ void		parse_grid(t_list *trav, t_list *head, t_cub *cub)
 	while (lst)
 	{
 		if (check_row(lst->content, cub) == -1)
-			free_lst_quit(head, cub);
+			free_lst_quit(head, cub, ERR_MAP);
 		lst = lst->next;
 	}
 	if (cub->map.player_found != 1 ||
 			cub->width <= 0 ||
 			cub->height <= 0)
-		free_lst_quit(head, cub);
+		free_lst_quit(head, cub, ERR_MAP);
 	if (save_map(trav, cub) == -1)
-		free_lst_quit(head, cub);
+		free_lst_quit(head, cub, ERR_MEM);
 	open = FALSE;
 	boundary_fill(cub->map.player.map_x, cub->map.player.map_y, &open, cub);
 	if (open == TRUE)
-		free_lst_quit(head, cub);
+		free_lst_quit(head, cub, ERR_MAP);
 	rev_boundary_fill(cub);
 }

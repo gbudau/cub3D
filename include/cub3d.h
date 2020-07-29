@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/28 22:02:57 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 18:08:17 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,11 @@
 # define VALID_MAP_CHARS "012NSWE "
 # define SPAWN_ORIENTATION "NSWE"
 # define TILE_SIZE 64
+# define ERR_IDENT "Invalid identifier."
+# define ERR_CUB "Invalid .cub file."
+# define ERR_MAP "Invalid map."
+# define ERR_MEM "Memory allocation error."
+# define ERR_WR "Write error."
 
 enum	e_bool
 {
@@ -266,14 +271,15 @@ int				grid_color(int row, int col, t_cub *cub);
 int				wall_side(t_ray *ray);
 int				is_wall(int x, int y, t_map *map);
 int				strlen_isdigit(char *str);
-void			free_info_lst_quit(char **info, t_list *head, t_cub *cub);
-void			free_lst_quit(t_list *head, t_cub *cub);
+void			free_info_lst_quit(char **info, t_list *head, t_cub *cub,
+				char *err_msg);
+void			free_lst_quit(t_list *head, t_cub *cub, char *error_msg);
 
 /*
 ** Others
 */
 
-void			quit_cub(t_cub *cub, int exit_code);
+void			quit_cub(t_cub *cub, int exit_code, char *error_message);
 int				check_args(int argc, char **argv, t_cub *cub);
 
 /*

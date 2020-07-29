@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/27 19:02:31 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/29 17:37:27 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	update_savebmp(t_cub *cub)
 	project_walls(cub);
 	draw_sprites(cub);
 	save_bitmap(cub);
-	quit_cub(cub, EXIT_SUCCESS);
+	quit_cub(cub, EXIT_SUCCESS, "");
 }
 
 int		main(int argc, char **argv)
