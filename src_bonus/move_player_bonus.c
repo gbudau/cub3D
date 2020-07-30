@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   move_player.c                                      :+:      :+:    :+:   */
+/*   move_player_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 16:34:33 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/27 21:04:11 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 19:36:02 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/cub3d.h"
+#include "../include_bonus/cub3d_bonus.h"
 
 static int	check_collision(t_cub *cub, float x, float y)
 {
 	int	**grid;
 
-	if (x < 1 || y < 1 || x >= cub->map.width * TILE_SIZE ||
-			y >= cub->map.height * TILE_SIZE)
+	if (x - 2 < 0 || y - 2 < 0 ||
+		x + 2 >= cub->map.width * TILE_SIZE ||
+		y + 2 >= cub->map.height * TILE_SIZE)
 		return (1);
 	grid = cub->map.grid;
 	if (grid[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE)] == 0 &&
-			grid[(int)((y - 1) / TILE_SIZE)][(int)(x / TILE_SIZE)] == 0 &&
-			grid[(int)(y / TILE_SIZE)][(int)((x - 1) / TILE_SIZE)] == 0)
+		grid[(int)((y - 2) / TILE_SIZE)][(int)(x / TILE_SIZE)] == 0 &&
+		grid[(int)(y / TILE_SIZE)][(int)((x - 2) / TILE_SIZE)] == 0 &&
+		grid[(int)((y - 2) / TILE_SIZE)][(int)((x - 2) / TILE_SIZE)] == 0 &&
+		grid[(int)((y + 2) / TILE_SIZE)][(int)(x / TILE_SIZE)] == 0 &&
+		grid[(int)(y / TILE_SIZE)][(int)((x + 2) / TILE_SIZE)] == 0 &&
+		grid[(int)((y + 2) / TILE_SIZE)][(int)((x + 2) / TILE_SIZE)] == 0)
 		return (0);
 	return (1);
 }

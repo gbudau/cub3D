@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/30 17:15:05 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 21:29:23 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,37 @@
 # define FOV 60
 # define PI 3.1415926535f
 # define TWO_PI 6.2831853071f
-# define KEY_A 97
-# define KEY_D 100
-# define KEY_S 115
-# define KEY_W 119
-# define KEY_Q 113
-# define KEY_ESC 65307
-# define KEY_AR_L 65361
-# define KEY_AR_R 65363
 # define TITLE "cub3D"
 # define WALK_SPEED 3.0f
 # define TURN_SPEED 2.0f
 # define TEXTURES 5
 # define VALID_MAP_CHARS "012NSWE "
 # define SPAWN_ORIENTATION "NSWE"
-# define TILE_SIZE 64
+# define TILE_SIZE 256
 # define ERR_IDENT "Invalid identifier."
 # define ERR_CUB "Invalid .cub file."
 # define ERR_MAP "Invalid map."
 # define ERR_MEM "Memory allocation error."
 # define ERR_WR "Write error."
+# ifdef __APPLE__
+#  define KEY_A 0
+#  define KEY_D 2
+#  define KEY_S 1
+#  define KEY_W 13
+#  define KEY_Q 12
+#  define KEY_ESC 53
+#  define KEY_AR_L 123
+#  define KEY_AR_R 124
+# elif __linux
+#  define KEY_A 97
+#  define KEY_D 100
+#  define KEY_S 115
+#  define KEY_W 119
+#  define KEY_Q 113
+#  define KEY_ESC 65307
+#  define KEY_AR_L 65361
+#  define KEY_AR_R 65363
+# endif
 
 enum	e_bool
 {
@@ -283,7 +294,6 @@ void			draw_sprites(t_cub *cub);
 void			project_walls(t_cub *cub);
 void			draw_floor(int x, t_wall_strip *wall, t_cub *cub);
 void			draw_ceiling(int x, t_wall_strip *wall, t_cub *cub);
-
 
 /*
 ** Raycast

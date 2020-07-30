@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 18:23:05 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/27 21:05:15 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 21:28:44 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ static void	calculate_tex_off_x(int i, t_wall_strip *w, t_cub *cub)
 {
 	if (cub->rays[i].was_hit_vert)
 	{
-		w->tex_off_x = (int)cub->rays[i].wall_hit_y %
-												cub->texture[w->side].height;
+		w->tex_off_x = (int)cub->rays[i].wall_hit_y % TILE_SIZE;
+		w->tex_off_x = w->tex_off_x * cub->texture[w->side].width / TILE_SIZE;
 	}
 	else
 	{
-		w->tex_off_x = (int)cub->rays[i].wall_hit_x %
-													cub->texture[w->side].width;
+		w->tex_off_x = (int)cub->rays[i].wall_hit_x % TILE_SIZE;
+		w->tex_off_x = w->tex_off_x * cub->texture[w->side].width / TILE_SIZE;
 	}
 }
 

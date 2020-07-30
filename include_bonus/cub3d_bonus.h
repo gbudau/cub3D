@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d.h                                            :+:      :+:    :+:   */
+/*   cub3d_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 22:21:28 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 20:58:21 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CUB3D_H
-# define CUB3D_H
+#ifndef CUB3D_BONUS_H
+# define CUB3D_BONUS_H
 # include "libft.h"
 # include "../lib/minilibx-linux/mlx.h"
 # include <math.h>
@@ -22,15 +22,6 @@
 # define FOV 60
 # define PI 3.1415926535f
 # define TWO_PI 6.2831853071f
-# define KEY_A 97
-# define KEY_D 100
-# define KEY_S 115
-# define KEY_W 119
-# define KEY_Q 113
-# define KEY_M 109
-# define KEY_ESC 65307
-# define KEY_AR_L 65361
-# define KEY_AR_R 65363
 # define TITLE "cub3D"
 # define MINIMAP_SCALE 0.2f
 # define WALK_SPEED 3.0f
@@ -44,6 +35,27 @@
 # define ERR_MAP "Invalid map."
 # define ERR_MEM "Memory allocation error."
 # define ERR_WR "Write error."
+# ifdef __APPLE__
+#  define KEY_A 0
+#  define KEY_D 2
+#  define KEY_S 1
+#  define KEY_W 13
+#  define KEY_Q 12
+#  define KEY_ESC 53
+#  define KEY_AR_L 123
+#  define KEY_AR_R 124
+#  define KEY_M 46
+# elif __linux
+#  define KEY_A 97
+#  define KEY_D 100
+#  define KEY_S 115
+#  define KEY_W 119
+#  define KEY_Q 113
+#  define KEY_ESC 65307
+#  define KEY_AR_L 65361
+#  define KEY_AR_R 65363
+#  define KEY_M 109
+# endif
 
 enum	e_bool
 {

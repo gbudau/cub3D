@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   project_walls.c                                    :+:      :+:    :+:   */
+/*   project_walls_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 18:23:05 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/27 21:05:15 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 21:31:10 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/cub3d.h"
+#include "../include_bonus/cub3d_bonus.h"
 
 static void	calculate_wall(int i, t_wall_strip *w, t_cub *cub)
 {
@@ -28,13 +28,13 @@ static void	calculate_tex_off_x(int i, t_wall_strip *w, t_cub *cub)
 {
 	if (cub->rays[i].was_hit_vert)
 	{
-		w->tex_off_x = (int)cub->rays[i].wall_hit_y %
-												cub->texture[w->side].height;
+		w->tex_off_x = (int)cub->rays[i].wall_hit_y % TILE_SIZE;
+		w->tex_off_x = w->tex_off_x * cub->texture[w->side].width / TILE_SIZE;
 	}
 	else
 	{
-		w->tex_off_x = (int)cub->rays[i].wall_hit_x %
-													cub->texture[w->side].width;
+		w->tex_off_x = (int)cub->rays[i].wall_hit_x % TILE_SIZE;
+		w->tex_off_x = w->tex_off_x * cub->texture[w->side].width / TILE_SIZE;
 	}
 }
 

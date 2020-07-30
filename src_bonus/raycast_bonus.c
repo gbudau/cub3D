@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/cub3d.h"
+#include "../include_bonus/cub3d_bonus.h"
 
 static void	calc_ray_dist(t_raycast *horz, t_raycast *vert, t_map *map)
 {

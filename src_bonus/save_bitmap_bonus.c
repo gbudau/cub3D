@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/cub3d.h"
+#include "../include_bonus/cub3d_bonus.h"
 
 static void	initialize_bit_file_header(t_bitmap_file_header *bfh, t_cub *cub)
 {

@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/30 17:13:55 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/30 21:48:19 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,18 +15,26 @@ NAME_BONUS = cub3D_bonus
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -O3
 OFLAGS = -c -o
-LFLAGS = -lmlx -lft -lXext -lX11 -lm
+UNAME := $(shell uname)
 RMF = rm -rf
 
 SRC_DIR = src
 SRC_DIR_BONUS = src_bonus
 LIB_DIR = lib
 LIBFT_DIR = libft
-MLX_DIR = minilibx-linux
 OBJ_DIR := obj
 OBJ_DIR_BONUS := obj_bonus
 INC_DIR = include
 INC_DIR_BONUS = include_bonus
+
+ifeq ($(UNAME),Linux)
+	LFLAGS = -lmlx -lft -lXext -lX11 -lm
+	MLX_DIR = minilibx-linux
+endif
+ifeq ($(UNAME),Darwin)
+	LFLAGS = -Lmlx -lmlx -framework OpenGL -framework AppKit -lm
+	MLX_DIR = minilibx_mms_20200219
+endif
 
 _OBJ = cub3d.o image_utils.o save_bitmap.o \
 	   parse.o boundary_fill.o initialize.o sprites.o hooks.o \

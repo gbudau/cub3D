@@ -1,10 +1,10 @@
-R 600 400
+R 1200 800
 NO ./pics/rock_wall.xpm
 SO ./pics/rock_wall2.xpm
 WE ./pics/rock_wall3.xpm
 EA ./pics/rock_wall4.xpm
 
-S ./pics/stone_wall.xpm
+S ./pics/plant-green.xpm
 F 76,70,50
 C 126,192,238
 
