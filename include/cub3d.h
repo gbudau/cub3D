@@ -6,16 +6,14 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/30 21:29:23 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 01:28:54 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 # include "libft.h"
-# include "../lib/minilibx-linux/mlx.h"
 # include <math.h>
-# include <X11/X.h>
 # include <limits.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -44,6 +42,7 @@
 #  define KEY_AR_L 123
 #  define KEY_AR_R 124
 # elif __linux
+#  include "../lib/minilibx-linux/mlx.h"
 #  define KEY_A 97
 #  define KEY_D 100
 #  define KEY_S 115

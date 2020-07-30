@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/30 20:58:21 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 01:29:21 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include "libft.h"
 # include "../lib/minilibx-linux/mlx.h"
 # include <math.h>
-# include <X11/X.h>
 # include <limits.h>
 # include <sys/stat.h>
 # include <fcntl.h>

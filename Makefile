@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/30 21:48:19 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/30 23:19:02 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ ifeq ($(UNAME),Linux)
 	MLX_DIR = minilibx-linux
 endif
 ifeq ($(UNAME),Darwin)
-	LFLAGS = -Lmlx -lmlx -framework OpenGL -framework AppKit -lm
+	LFLAGS = -lmlx -framework OpenGL -framework AppKit -lm
 	MLX_DIR = minilibx_mms_20200219
 endif
 

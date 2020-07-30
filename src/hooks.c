@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 21:12:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/30 17:14:49 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 01:31:42 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ static int	close_window(int keycode, t_cub *cub)
 
 void		set_hooks(t_cub *cub)
 {
-	mlx_hook(cub->win, ClientMessage, StructureNotifyMask,
+	mlx_hook(cub->win, 33, (1L << 17),
 			close_window, cub);
-	mlx_hook(cub->win, KeyPress, KeyPressMask, key_press, cub);
-	mlx_hook(cub->win, KeyRelease, KeyReleaseMask, key_release, cub);
+	mlx_hook(cub->win, 2, (1L << 0), key_press, cub);
+	mlx_hook(cub->win, 3, (1L << 1), key_release, cub);
 }
