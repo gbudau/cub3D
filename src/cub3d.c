@@ -6,26 +6,16 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:38:32 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 17:37:27 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 17:10:49 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
-void	minimap(t_cub *cub)
-{
-	draw_minimap(cub);
-	draw_rays_minimap(cub->rays, cub);
-	draw_player_minimap(cub, &cub->map.player);
-	draw_sprites_minimap(cub);
-}
-
 void	render(t_cub *cub)
 {
 	project_walls(cub);
 	draw_sprites(cub);
-	if (cub->minimap)
-		minimap(cub);
 }
 
 int		update(t_cub *cub)

@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 22:21:28 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 17:15:05 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,10 @@
 # define KEY_S 115
 # define KEY_W 119
 # define KEY_Q 113
-# define KEY_M 109
 # define KEY_ESC 65307
 # define KEY_AR_L 65361
 # define KEY_AR_R 65363
 # define TITLE "cub3D"
-# define MINIMAP_SCALE 0.2f
 # define WALK_SPEED 3.0f
 # define TURN_SPEED 2.0f
 # define TEXTURES 5
@@ -120,16 +118,6 @@ typedef struct	s_point
 	int x;
 	int y;
 }				t_point;
-
-typedef struct	s_line_var
-{
-	int	dx;
-	int	dy;
-	int	sx;
-	int	sy;
-	int error;
-	int error2;
-}				t_line_var;
 
 typedef struct	s_player
 {
@@ -248,7 +236,6 @@ typedef struct	s_cub
 	void		*win;
 	int			width;
 	int			height;
-	int			minimap;
 	int			savebmp;
 	float		fov_angle;
 	float		half_fov_angle;
@@ -297,14 +284,6 @@ void			project_walls(t_cub *cub);
 void			draw_floor(int x, t_wall_strip *wall, t_cub *cub);
 void			draw_ceiling(int x, t_wall_strip *wall, t_cub *cub);
 
-/*
-** Draw minimap
-*/
-
-void			draw_minimap(t_cub *cub);
-void			draw_rays_minimap(t_ray *rays, t_cub *cub);
-void			draw_player_minimap(t_cub *cub, t_player *player);
-void			draw_sprites_minimap(t_cub *cub);
 
 /*
 ** Raycast

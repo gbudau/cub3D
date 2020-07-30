@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 21:12:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 17:37:51 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/30 17:14:49 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ static int	key_press(int keycode, t_cub *cub)
 		cub->map.player.turn_direction = 1;
 	if (keycode == KEY_AR_L)
 		cub->map.player.turn_direction = -1;
-	if (keycode == KEY_M)
-		cub->minimap = !cub->minimap;
 	return (0);
 }
 

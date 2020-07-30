@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/30 17:07:35 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/30 17:13:55 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ INC_DIR_BONUS = include_bonus
 
 _OBJ = cub3d.o image_utils.o save_bitmap.o \
 	   parse.o boundary_fill.o initialize.o sprites.o hooks.o \
-	   utils.o minimap.o move_player.o raycast.o quit.o check_args.o \
+	   utils.o move_player.o raycast.o quit.o check_args.o \
 	   project_walls.o project_walls_utils.o raycast_horizontal.o \
 	   raycast_vertical.o parse_utils.o parse_grid.o save_grid.o \
 	   parse_resolution.o parse_color.o parse_texture.o
