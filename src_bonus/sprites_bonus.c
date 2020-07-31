@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 21:04:23 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/31 19:20:23 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 20:18:19 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static void	draw_sprite(t_cub *cub, int i, int tex_id)
 					c = pixel_get(&cub->texture[tex_id].image,
 							x * cub->texture[tex_id].height / s->size,
 							y * cub->texture[tex_id].width / s->size);
-					if (!(c & (0xff << 24)))
+					if (c & 0xffffff)
 						pixel_put(&cub->image, s->x_off + x, s->y_off + y, c);
 				}
 			}
