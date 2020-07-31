@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 18:21:48 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 20:54:46 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 19:07:56 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	create_color(char **rgb, int *color)
 	blue = str_to_color(rgb[2]);
 	if (blue < 0)
 		return (-1);
-	*color = (255 << 24) | (red << 16) | (green << 8) | blue;
+	*color = (0 << 24) | (red << 16) | (green << 8) | blue;
 	return (0);
 }
 

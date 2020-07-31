@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/31 02:16:35 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 19:11:54 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,13 @@ enum	e_textures
 
 enum	e_colors
 {
-	RAYS_COL = 0xffffff00,
-	SPRITE_COL = 0xffffa500,
-	PLAYER_COL = 0xff101010,
-	PLAYER_DIR_COL = 0xff333333,
-	EMPTY_COL = 0xffffffff,
-	SPACE_COL = 0xff000000,
-	WALL_COL = 0xff003366
+	RAYS_COL = 0x00ffff00,
+	SPRITE_COL = 0x00ffa500,
+	PLAYER_COL = 0x00101010,
+	PLAYER_DIR_COL = 0x00333333,
+	EMPTY_COL = 0x00ffffff,
+	SPACE_COL = 0x00000000,
+	WALL_COL = 0x00003366
 };
 
 enum	e_flags
