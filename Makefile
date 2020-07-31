@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/31 02:16:53 by gbudau           ###   ########.fr        #
+#    Updated: 2020/07/31 18:57:07 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ endif
 ifeq ($(UNAME),Darwin)
 	LFLAGS = -lmlx -lft -framework OpenGL -framework AppKit -lm
 	MLX_DIR = minilibx_mms_20200219
+	DYN_LIB = libmlx.dylib
 endif
 
 _OBJ = cub3d.o image_utils.o save_bitmap.o \
@@ -88,13 +89,16 @@ $(OBJ_DIR_BONUS):
 $(NAME): $(OBJ)
 	make -C $(LIB_DIR)/$(MLX_DIR) 2>/dev/null
 ifeq ($(UNAME),Darwin)
-	cp $(LIB_DIR)/$(MLX_DIR)/libmlx.dylib .
+	cp $(LIB_DIR)/$(MLX_DIR)/$(DYN_LIB) .
 endif
 	make -C $(LIB_DIR)/$(LIBFT_DIR)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -I/$(INC_DIR) -L$(LIB_DIR)/$(MLX_DIR) -L$(LIB_DIR)/$(LIBFT_DIR) $(LFLAGS)
 
 $(NAME_BONUS): $(OBJ_BONUS)
 	make -C $(LIB_DIR)/$(MLX_DIR) 2>/dev/null
+ifeq ($(UNAME),Darwin)
+	cp $(LIB_DIR)/$(MLX_DIR)/$(DYN_LIB) .
+endif
 	make -C $(LIB_DIR)/$(LIBFT_DIR)
 	$(CC) $(CFLAGS) -o $(NAME_BONUS) $(OBJ_BONUS) -I/$(INC_DIR_BONUS) -L$(LIB_DIR)/$(MLX_DIR) -L$(LIB_DIR)/$(LIBFT_DIR) $(LFLAGS)
 
@@ -120,15 +124,24 @@ clean_full:
 .PHONY: fclean
 fclean: clean
 	$(RM) $(NAME)
+ifeq ($(UNAME),Darwin)
+	$(RM) $(DYN_LIB)
+endif
 
 .PHONY: fclean_bonus
 fclean_bonus: clean_bonus
 	$(RM) $(NAME_BONUS)
+ifeq ($(UNAME),Darwin)
+	$(RM) $(DYN_LIB)
+endif
 
 .PHONY: fclean_full
 fclean_full: clean_full
 	$(RM) $(NAME)
 	$(RM) $(NAME_BONUS)
+ifeq ($(UNAME),Darwin)
+	$(RM) $(DYN_LIB)
+endif
 
 .PHONY: re
 re: fclean all
