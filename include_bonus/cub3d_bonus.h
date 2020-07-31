@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/31 01:29:21 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 02:16:35 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # define FOV 60
 # define PI 3.1415926535f
 # define TWO_PI 6.2831853071f
-# define TITLE "cub3D"
+# define TITLE "cub3D_bonus"
 # define MINIMAP_SCALE 0.2f
 # define WALK_SPEED 3.0f
 # define TURN_SPEED 2.0f
@@ -35,6 +35,7 @@
 # define ERR_MEM "Memory allocation error."
 # define ERR_WR "Write error."
 # ifdef __APPLE__
+#  include "../lib/minilibx_mms_20200219/mlx.h"
 #  define KEY_A 0
 #  define KEY_D 2
 #  define KEY_S 1
@@ -44,7 +45,9 @@
 #  define KEY_AR_L 123
 #  define KEY_AR_R 124
 #  define KEY_M 46
+#  define LINUX 0
 # elif __linux
+#  include "../lib/minilibx-linux/mlx.h"
 #  define KEY_A 97
 #  define KEY_D 100
 #  define KEY_S 115
@@ -54,6 +57,7 @@
 #  define KEY_AR_L 65361
 #  define KEY_AR_R 65363
 #  define KEY_M 109
+#  define LINUX 1
 # endif
 
 enum	e_bool

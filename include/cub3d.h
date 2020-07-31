@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/31 01:28:54 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/07/31 01:46:34 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # define ERR_MEM "Memory allocation error."
 # define ERR_WR "Write error."
 # ifdef __APPLE__
+#  include "../lib/minilibx_mms_20200219/mlx.h"
 #  define KEY_A 0
 #  define KEY_D 2
 #  define KEY_S 1
@@ -41,6 +42,7 @@
 #  define KEY_ESC 53
 #  define KEY_AR_L 123
 #  define KEY_AR_R 124
+#  define LINUX 0
 # elif __linux
 #  include "../lib/minilibx-linux/mlx.h"
 #  define KEY_A 97
@@ -51,6 +53,7 @@
 #  define KEY_ESC 65307
 #  define KEY_AR_L 65361
 #  define KEY_AR_R 65363
+#  define LINUX 1
 # endif
 
 enum	e_bool
