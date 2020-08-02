@@ -1,0 +1,21 @@
+
+R 0 0
+
+F 250,127,127
+C 129,192,238
+
+NO ./pics/tile7.xpm
+SO ./pics/tile41.xpm
+WE ./pics/tile42.xpm
+EA ./pics/tile43.xpm
+
+S ./pics/armor.xpm
+
+11111111
+12222221
+12222221
+10000001
+100000W1
+12222221
+12222221
+11111111
