@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/18 20:32:37 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 18:00:45 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 10:55:16 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void		save_bitmap(t_cub *cub)
 
 	initialize_bit_file_header(&bfh, cub);
 	initialize_bit_info_header(&bih, cub);
-	fd = open("screenshot.bmp", O_WRONLY | O_CREAT | O_TRUNC,
+	fd = open(SCREENSHOT, O_WRONLY | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd < 0)
 		quit_cub(cub, EXIT_FAILURE, "Open error.");

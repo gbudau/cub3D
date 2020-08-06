@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/31 19:11:54 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 10:54:12 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define ERR_MAP "Invalid map."
 # define ERR_MEM "Memory allocation error."
 # define ERR_WR "Write error."
+# define SCREENSHOT "screenshot_bonus.bmp"
 # ifdef __APPLE__
 #  include "../lib/minilibx_mms_20200219/mlx.h"
 #  define KEY_A 0

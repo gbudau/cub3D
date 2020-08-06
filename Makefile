@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/07/31 18:57:07 by gbudau           ###   ########.fr        #
+#    Updated: 2020/08/06 10:56:51 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -107,12 +107,14 @@ clean:
 	make -C $(LIB_DIR)/$(LIBFT_DIR) fclean
 	make -C $(LIB_DIR)/$(MLX_DIR) clean
 	$(RMF) $(OBJ_DIR)
+	$(RM) $(wildcard *.bmp)
 
 .PHONY: clean_bonus
 clean_bonus:
 	make -C $(LIB_DIR)/$(LIBFT_DIR) fclean
 	make -C $(LIB_DIR)/$(MLX_DIR) clean
 	$(RMF) $(OBJ_DIR_BONUS)
+	$(RM) $(wildcard *.bmp)
 
 .PHONY: clean_full
 clean_full:
@@ -120,6 +122,7 @@ clean_full:
 	make -C $(LIB_DIR)/$(MLX_DIR) clean
 	$(RMF) $(OBJ_DIR)
 	$(RMF) $(OBJ_DIR_BONUS)
+	$(RM) $(wildcard *.bmp)
 
 .PHONY: fclean
 fclean: clean
