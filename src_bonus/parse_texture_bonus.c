@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_texture.c                                    :+:      :+:    :+:   */
+/*   parse_texture_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 18:25:49 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/28 18:26:15 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 12:32:33 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int			parse_texture(int *flags, t_cub *cub)
 		return (save_texture(flags, WEST_TEX, WEST, cub));
 	else if (!ft_strcmp(*info, "EA"))
 		return (save_texture(flags, EAST_TEX, EAST, cub));
-	else
+	else if (!ft_strcmp(*info, "S"))
 		return (save_texture(flags, SPRITE_TEX, SPRITE, cub));
+	else
+		return (save_texture(flags, SSPRITE_TEX, SSPRITE, cub));
 }

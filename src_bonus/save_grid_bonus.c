@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   save_grid.c                                        :+:      :+:    :+:   */
+/*   save_grid_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 18:07:16 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/28 18:11:52 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 12:13:23 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,10 @@ static void	set_sprite(int x, int y, int i, t_cub *cub)
 {
 	cub->sprites[i].map_x = x;
 	cub->sprites[i].map_y = y;
-	cub->sprites[i].tex_id = SPRITE;
+	if (cub->row[x] == '2')
+		cub->sprites[i].tex_id = SPRITE;
+	else
+		cub->sprites[i].tex_id = SSPRITE;
 	cub->row[x] = '0';
 }
 
@@ -86,7 +89,7 @@ static int	save_sprite_positions(t_list *trav, t_cub *cub)
 		x = 0;
 		while (cub->row[x])
 		{
-			if (cub->row[x] == '2')
+			if (cub->row[x] == '2' || cub->row[x] == '3')
 			{
 				set_sprite(x, y, i, cub);
 				i++;

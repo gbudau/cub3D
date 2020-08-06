@@ -1,0 +1,15 @@
+R 800 600
+SS ./pics/table-chairs.xpm
+
+NO ./pics/bluestone.xpm
+SO ./pics/colorstone.xpm
+WE ./pics/redbrick.xpm
+EA ./pics/wood.xpm
+
+S ./pics/barrel.xpm
+F 220,100,0
+C 225,30,0
+
+01110
+1N231
+01110

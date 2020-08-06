@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 14:36:57 by gbudau            #+#    #+#             */
-/*   Updated: 2020/08/06 10:54:12 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 13:16:19 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@
 # define MINIMAP_SCALE 0.2f
 # define WALK_SPEED 3.0f
 # define TURN_SPEED 2.0f
-# define TEXTURES 5
-# define VALID_MAP_CHARS "012NSWE "
+# define TEXTURES 6
+# define SPRITE_COLLISION_DIST 16
+# define VALID_MAP_CHARS "0123NSWE "
 # define SPAWN_ORIENTATION "NSWE"
 # define TILE_SIZE 64
 # define ERR_IDENT "Invalid identifier."
@@ -81,7 +82,8 @@ enum	e_textures
 	WEST,
 	SOUTH,
 	NORTH,
-	SPRITE
+	SPRITE,
+	SSPRITE
 };
 
 enum	e_colors
@@ -103,9 +105,10 @@ enum	e_flags
 	WEST_TEX = (1 << 3),
 	EAST_TEX = (1 << 4),
 	SPRITE_TEX = (1 << 5),
-	FLOOR_COL = (1 << 6),
-	CEIL_COL = (1 << 7),
-	IDENTIFIERS = ((1 << 8) - 1)
+	SSPRITE_TEX = (1 << 6),
+	FLOOR_COL = (1 << 7),
+	CEIL_COL = (1 << 8),
+	IDENTIFIERS = ((1 << 9) - 1)
 };
 
 typedef struct	s_bitmap_file_header

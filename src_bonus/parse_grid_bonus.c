@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_grid.c                                       :+:      :+:    :+:   */
+/*   parse_grid_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 17:50:51 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 20:30:30 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 12:09:48 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	check_row(char *str, t_cub *cub)
 	{
 		if (ft_strchr(VALID_MAP_CHARS, str[i]) == NULL)
 			return (-1);
-		if (str[i] == '2')
+		if (str[i] == '2' || str[i] == '3')
 			cub->map.sprites++;
 		if (ft_strchr(SPAWN_ORIENTATION, str[i]))
 		{

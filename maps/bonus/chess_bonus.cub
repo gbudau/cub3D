@@ -1,0 +1,22 @@
+
+R 1024 768
+
+F 127,127,127
+C 129,192,238
+
+NO ./pics/tile7.xpm
+SO ./pics/tile41.xpm
+WE ./pics/tile42.xpm
+EA ./pics/tile43.xpm
+
+S ./pics/armor.xpm
+SS ./pics/table-chairs.xpm
+
+11111111
+12323231
+13232321
+10000001
+100000W1
+13232321
+12323231
+11111111

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   parse_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/19 17:53:27 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/29 18:41:59 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 12:08:44 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	parse_identifier(int *flags, t_list *head, t_cub *cub)
 	}
 	else if (!ft_strcmp(*info, "NO") || !ft_strcmp(*info, "SO") ||
 			!ft_strcmp(*info, "WE") || !ft_strcmp(*info, "EA") ||
-			!ft_strcmp(*info, "S"))
+			!ft_strcmp(*info, "S") || !ft_strcmp(*info, "SS"))
 	{
 		if (parse_texture(flags, cub) == -1)
 			free_info_lst_quit(info, head, cub, ERR_IDENT);

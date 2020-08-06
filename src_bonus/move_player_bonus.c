@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/26 16:34:33 by gbudau            #+#    #+#             */
-/*   Updated: 2020/07/30 19:36:02 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 11:58:02 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,19 @@ static int	check_collision(t_cub *cub, float x, float y)
 	return (1);
 }
 
+static int	check_sprite_collision(t_cub *cub, float x, float y)
+{
+	float	distance;
+
+	if (cub->map.sprites < 1)
+		return (0);
+	distance = points_dist(x, cub->sprites[cub->map.sprites - 1].x,
+							y, cub->sprites[cub->map.sprites - 1].y);
+	if (distance < SPRITE_COLLISION_DIST)
+		return (1);
+	return (0);
+}
+
 void		move_player(t_player *player, t_cub *cub)
 {
 	float	move_step;
@@ -49,7 +62,8 @@ void		move_player(t_player *player, t_cub *cub)
 		cos(player->rotation_angle + strafe_angle) * strafe_step;
 	new_y = player->y + sin(player->rotation_angle) * move_step +
 		sin(player->rotation_angle + strafe_angle) * strafe_step;
-	if (check_collision(cub, new_x, new_y) == 0)
+	if (check_collision(cub, new_x, new_y) == 0 &&
+			check_sprite_collision(cub, new_x, new_y) == 0)
 	{
 		player->x = new_x;
 		player->y = new_y;

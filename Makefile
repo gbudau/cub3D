@@ -6,14 +6,14 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/08/06 10:56:51 by gbudau           ###   ########.fr        #
+#    Updated: 2020/08/06 13:16:04 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 NAME_BONUS = cub3D_bonus
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -O3
+CFLAGS = -Wall -Werror -Wextra -g
 OFLAGS = -c -o
 UNAME := $(shell uname)
 RMF = rm -rf
