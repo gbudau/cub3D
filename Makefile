@@ -6,7 +6,7 @@
 #    By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/07/01 17:44:30 by gbudau            #+#    #+#              #
-#    Updated: 2020/08/06 13:29:14 by gbudau           ###   ########.fr        #
+#    Updated: 2020/08/06 14:31:51 by gbudau           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,13 +62,10 @@ _DEPS_BONUS = cub3d_bonus.h libft.h
 DEPS_BONUS := $(patsubst %, $(INC_DIR_BONUS)/%, $(_DEPS_BONUS))
 
 .PHONY: all
-all: $(NAME)
+all: $(NAME) $(NAME_BONUS)
 
 .PHONY: bonus
 bonus: $(NAME_BONUS)
-
-.PHONY: full
-full: $(NAME) $(NAME_BONUS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
 	$(CC) $(CFLAGS) $(OFLAGS) $@ $<
@@ -107,39 +104,11 @@ clean:
 	make -C $(LIB_DIR)/$(LIBFT_DIR) fclean
 	make -C $(LIB_DIR)/$(MLX_DIR) clean
 	$(RMF) $(OBJ_DIR)
-	$(RM) $(wildcard *.bmp)
-
-.PHONY: clean_bonus
-clean_bonus:
-	make -C $(LIB_DIR)/$(LIBFT_DIR) fclean
-	make -C $(LIB_DIR)/$(MLX_DIR) clean
-	$(RMF) $(OBJ_DIR_BONUS)
-	$(RM) $(wildcard *.bmp)
-
-.PHONY: clean_full
-clean_full:
-	make -C $(LIB_DIR)/$(LIBFT_DIR) fclean
-	make -C $(LIB_DIR)/$(MLX_DIR) clean
-	$(RMF) $(OBJ_DIR)
 	$(RMF) $(OBJ_DIR_BONUS)
 	$(RM) $(wildcard *.bmp)
 
 .PHONY: fclean
 fclean: clean
-	$(RM) $(NAME)
-ifeq ($(UNAME),Darwin)
-	$(RM) $(DYN_LIB)
-endif
-
-.PHONY: fclean_bonus
-fclean_bonus: clean_bonus
-	$(RM) $(NAME_BONUS)
-ifeq ($(UNAME),Darwin)
-	$(RM) $(DYN_LIB)
-endif
-
-.PHONY: fclean_full
-fclean_full: clean_full
 	$(RM) $(NAME)
 	$(RM) $(NAME_BONUS)
 ifeq ($(UNAME),Darwin)
@@ -147,10 +116,4 @@ ifeq ($(UNAME),Darwin)
 endif
 
 .PHONY: re
-re: fclean all
-
-.PHONY: re_bonus
-re_bonus: fclean_bonus bonus
-
-.PHONY: re_full
-re_full: fclean_full all bonus
+re: fclean all bonus
