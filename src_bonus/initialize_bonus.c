@@ -6,7 +6,7 @@
 /*   By: gbudau <gbudau@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/25 19:06:11 by gbudau            #+#    #+#             */
-/*   Updated: 2020/08/06 13:20:25 by gbudau           ###   ########.fr       */
+/*   Updated: 2020/08/06 13:45:45 by gbudau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ static void		initialize_cub(t_cub *cub)
 	cub->half_fov_angle = (FOV / 2) * (PI / 180);
 	cub->angle_step = cub->fov_angle / cub->width;
 	cub->dist_proj_plane = (cub->width / 2) / tan(cub->half_fov_angle);
+	cub->minimap = 1;
 }
 
 void			initialize(t_cub *cub)
